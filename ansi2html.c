@@ -75,7 +75,25 @@ static const char *ansi_colors[16] = {
     "#ffffff",  /* 15: Bright White */
 };
 
-/* Font list - fonts from old_fonts directory */
+/* Font metadata with pixel dimensions and aspect ratio */
+typedef struct {
+    const char *name;           /* Font name */
+    int width;                  /* Character width in pixels */
+    int height;                 /* Character height in pixels */
+    float aspect_ratio;         /* width/height ratio */
+} FontMetadata;
+
+static const FontMetadata font_info[] = {
+    {"Px437_IBM_VGA_8x16",   8,  16, 0.5f},      /* 2:1 aspect (DOS standard) */
+    {"Px437_IBM_VGA_9x16",   9,  16, 0.5625f},   /* 1.78:1 aspect, needs correction to 2:1 */
+    {"Px437_IBM_EGA_8x14",   8,  14, 0.5714f},   /* 1.75:1 aspect, needs correction to 2:1 */
+    {"Px437_IBM_BIOS",       8,  16, 0.5f},      /* 2:1 aspect */
+    {"Px437_IBM_CGA",        8,  16, 0.5f},      /* 2:1 aspect */
+    {"Px437_DOS-V_re_JPN12", 10, 20, 0.5f},      /* 2:1 aspect */
+    {NULL, 0, 0, 0}
+};
+
+/* Legacy font list for compatibility */
 static const char *font_list[] = {
     "Px437_IBM_VGA_8x16",
     "Px437_IBM_VGA_9x16",
@@ -466,14 +484,31 @@ static void parse_ansi(Screen *screen, State *state, const unsigned char *data, 
                 }
             }
         } else if (ch == '\n') {
-            /* Newline - move to next row, reset column */
-            state->row++;
-            state->col = 0;
-            i++;
+            /* Newline handling - check for \r\n and \n\r sequences */
+            if (i + 1 < size && data[i + 1] == '\r') {
+                /* \n\r sequence: move to next row, reset column */
+                state->row++;
+                state->col = 0;
+                i += 2;
+            } else {
+                /* Just \n: move to next row, reset column */
+                state->row++;
+                state->col = 0;
+                i++;
+            }
         } else if (ch == '\r') {
-            /* Carriage return - reset column */
-            state->col = 0;
-            i++;
+            /* Carriage return handling - check for \r\n sequence */
+            if (i + 1 < size && data[i + 1] == '\n') {
+                /* \r\n sequence: move to next row, reset column */
+                state->row++;
+                state->col = 0;
+                i += 2;
+            } else {
+                /* Just \r: carriage return only, reset column and allow overwrite */
+                state->row++;
+                state->col = 0;
+                i++;
+            }
         } else if (ch == '\t') {
             /* Tab - move to next 8-column boundary */
             state->col = (state->col + 8) & ~7;
@@ -510,6 +545,25 @@ static void output_char_escaped(unsigned char ch) {
                 putchar(' ');
             }
             break;
+    }
+}
+
+/* Generate font-specific CSS with proper line heights for 2:1 DOS aspect ratio */
+static void generate_font_css(void) {
+    /* DOS terminal standard: 2:1 aspect ratio (char height = 2 * char width) */
+    
+    for (int i = 0; font_info[i].name != NULL; i++) {
+        /* Calculate line-height to maintain 2:1 aspect ratio */
+        /* Formula: target_aspect / current_aspect */
+        /* target_aspect = 2.0 (DOS standard) */
+        /* current_aspect = height / width */
+        float current_aspect = (float)font_info[i].height / font_info[i].width;
+        float target_aspect = 2.0f;
+        float line_height = target_aspect / current_aspect;
+        
+        printf("/* %s: %dx%d pixels, aspect correction: %.3f */\n",
+               font_info[i].name, font_info[i].width, font_info[i].height, line_height);
+        printf(".font-%s-lh { line-height: %.4f; }\n", font_info[i].name, line_height);
     }
 }
 
@@ -567,8 +621,12 @@ static void output_html(Screen *screen) {
      printf("  line-height: 1;\n");
      printf("}\n");
      
-     /* Font declarations */
-     generate_font_list();
+      /* Font declarations */
+      generate_font_list();
+      
+      /* Font-specific line heights for 2:1 DOS aspect ratio */
+      printf("\n/* Font-specific line heights for DOS 2:1 aspect ratio */\n");
+      generate_font_css();
     
      /* Base styles */
      printf("body {\n");
@@ -646,79 +704,123 @@ static void output_html(Screen *screen) {
     }
     printf("  </select>\n");
     printf("</div>\n");
-    printf("<div class=\"content\">\n");
-    printf("<pre class=\"ansi-art\" id=\"ansi-art\">");
-    
-    /* Output characters */
-    int char_id = 0;
-    for (int row = 0; row < total_rows; row++) {
-        for (int col = 0; col < total_cols; col++) {
-            Cell *cell = &screen->cells[row][col];
-            
-            /* Build class string */
-            char class_str[256] = "";
-            int class_len = 0;
-            
-            if (cell->fg >= 0 && cell->fg < 16) {
-                class_len += snprintf(class_str + class_len, sizeof(class_str) - class_len, 
-                                      "fg-%d", cell->fg);
-            } else if (cell->fg >= 0x1000000) {
-                /* True color - will use inline style instead */
-            }
-            
-            if (cell->bg >= 0 && cell->bg < 16 && cell->bg != 0) {
-                if (class_len > 0) class_str[class_len++] = ' ';
-                class_len += snprintf(class_str + class_len, sizeof(class_str) - class_len,
-                                      "bg-%d", cell->bg);
-            }
-            
-            if (cell->bold) {
-                if (class_len > 0) class_str[class_len++] = ' ';
-                class_len += snprintf(class_str + class_len, sizeof(class_str) - class_len, "bold");
-            }
-            
-            /* Build inline style for true colors */
-            char style_str[128] = "";
-            if (opt_truecolor) {
-                int style_len = 0;
-                if (cell->fg >= 0x1000000) {
-                    int rgb = cell->fg & 0xFFFFFF;
-                    style_len += snprintf(style_str + style_len, sizeof(style_str) - style_len,
-                                          "color:#%06x;", rgb);
-                }
-                if (cell->bg >= 0x1000000) {
-                    int rgb = cell->bg & 0xFFFFFF;
-                    style_len += snprintf(style_str + style_len, sizeof(style_str) - style_len,
-                                          "background-color:#%06x;", rgb);
-                }
-            }
-            
-            /* Output span */
-            printf("<span data-id=\"%d\" data-row=\"%d\" data-col=\"%d\"",
-                   char_id++, row, col);
-            
-            if (class_str[0]) {
-                printf(" class=\"%s\"", class_str);
-            }
-            if (style_str[0]) {
-                printf(" style=\"%s\"", style_str);
-            }
-            
-            printf(">");
-            output_char_escaped(cell->ch);
-            printf("</span>");
-        }
-        /* End of row - add newline in output */
-        printf("\n");
-    }
-    
-    printf("</pre>\n");
-    printf("</div>\n");
-    printf("<script>\n");
-    printf("function changeFont(fontName) {\n");
-    printf("  document.getElementById('ansi-art').style.fontFamily = \"'\" + fontName + \"', 'Courier New', monospace\";\n");
-    printf("}\n");
-    printf("</script>\n");
+     printf("<div class=\"content\">\n");
+     printf("<pre class=\"ansi-art\" id=\"ansi-art\">");
+     
+     /* Output characters with trailing whitespace trimming */
+     int char_id = 0;
+     for (int row = 0; row < total_rows; row++) {
+         /* Calculate actual content end for this row */
+         /* Include character content and any cells with styling */
+         int row_content_end = 0;
+         
+         /* Find last cell with non-space content */
+         for (int col = total_cols - 1; col >= 0; col--) {
+             Cell *cell = &screen->cells[row][col];
+             if (cell->ch != 0 && cell->ch != ' ') {
+                 row_content_end = col + 1;
+                 break;
+             }
+         }
+         
+         /* Also include any trailing spaces with color/style */
+         for (int col = row_content_end; col < total_cols; col++) {
+             Cell *cell = &screen->cells[row][col];
+             if ((cell->fg >= 0 && cell->fg < 16 && cell->fg != 7) ||
+                 (cell->bg >= 0 && cell->bg != 0) ||
+                 cell->bold) {
+                 row_content_end = col + 1;
+             }
+         }
+         
+         /* Output up to content end, or minimum 1 character per row */
+         int output_cols = (row_content_end > 0) ? row_content_end : 1;
+         
+         for (int col = 0; col < output_cols; col++) {
+             Cell *cell = &screen->cells[row][col];
+             
+             /* Build class string */
+             char class_str[256] = "";
+             int class_len = 0;
+             
+             if (cell->fg >= 0 && cell->fg < 16) {
+                 class_len += snprintf(class_str + class_len, sizeof(class_str) - class_len, 
+                                       "fg-%d", cell->fg);
+             } else if (cell->fg >= 0x1000000) {
+                 /* True color - will use inline style instead */
+             }
+             
+             if (cell->bg >= 0 && cell->bg < 16 && cell->bg != 0) {
+                 if (class_len > 0) class_str[class_len++] = ' ';
+                 class_len += snprintf(class_str + class_len, sizeof(class_str) - class_len,
+                                       "bg-%d", cell->bg);
+             }
+             
+             if (cell->bold) {
+                 if (class_len > 0) class_str[class_len++] = ' ';
+                 class_len += snprintf(class_str + class_len, sizeof(class_str) - class_len, "bold");
+             }
+             
+             /* Build inline style for true colors */
+             char style_str[128] = "";
+             if (opt_truecolor) {
+                 int style_len = 0;
+                 if (cell->fg >= 0x1000000) {
+                     int rgb = cell->fg & 0xFFFFFF;
+                     style_len += snprintf(style_str + style_len, sizeof(style_str) - style_len,
+                                           "color:#%06x;", rgb);
+                 }
+                 if (cell->bg >= 0x1000000) {
+                     int rgb = cell->bg & 0xFFFFFF;
+                     style_len += snprintf(style_str + style_len, sizeof(style_str) - style_len,
+                                           "background-color:#%06x;", rgb);
+                 }
+             }
+             
+             /* Output span */
+             printf("<span data-id=\"%d\" data-row=\"%d\" data-col=\"%d\"",
+                    char_id++, row, col);
+             
+             if (class_str[0]) {
+                 printf(" class=\"%s\"", class_str);
+             }
+             if (style_str[0]) {
+                 printf(" style=\"%s\"", style_str);
+             }
+             
+             printf(">");
+             output_char_escaped(cell->ch);
+             printf("</span>");
+         }
+         /* End of row - add newline in output */
+          printf("\n");
+      }
+     
+     printf("</pre>\n");
+     printf("</div>\n");
+     printf("<script>\n");
+     printf("// Font metadata for maintaining 2:1 DOS aspect ratio\n");
+     printf("const fontAspectMap = {\n");
+     printf("  'Px437_IBM_VGA_8x16': { w: 8, h: 16, lh: 1.0 },\n");
+     printf("  'Px437_IBM_VGA_9x16': { w: 9, h: 16, lh: 0.8889 },\n");
+     printf("  'Px437_IBM_EGA_8x14': { w: 8, h: 14, lh: 1.1429 },\n");
+     printf("  'Px437_IBM_BIOS': { w: 8, h: 16, lh: 1.0 },\n");
+     printf("  'Px437_IBM_CGA': { w: 8, h: 16, lh: 1.0 },\n");
+     printf("  'Px437_DOS-V_re_JPN12': { w: 10, h: 20, lh: 1.0 }\n");
+     printf("};\n");
+     printf("function changeFont(fontName) {\n");
+     printf("  const ansiArt = document.getElementById('ansi-art');\n");
+     printf("  ansiArt.style.fontFamily = \"'\" + fontName + \"', 'Courier New', monospace\";\n");
+     printf("  \n");
+     printf("  // Adjust line-height to maintain 2:1 DOS aspect ratio\n");
+     printf("  if (fontAspectMap[fontName]) {\n");
+     printf("    const lineHeight = fontAspectMap[fontName].lh;\n");
+     printf("    ansiArt.style.lineHeight = lineHeight;\n");
+     printf("  } else {\n");
+     printf("    ansiArt.style.lineHeight = '1.0';\n");
+     printf("  }\n");
+     printf("}\n");
+     printf("</script>\n");
     printf("</body>\n");
     printf("</html>\n");
 }
