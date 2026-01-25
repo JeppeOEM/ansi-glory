@@ -97,19 +97,27 @@
       padding: 8px;
     }
     
-    .viewer {
-      background: rgba(0, 0, 0, 0.6);
-      border: 2px solid rgba(255, 107, 107, 0.2);
-      border-radius: 12px;
-      padding: 30px;
-      overflow: auto;
-      backdrop-filter: blur(10px);
-      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
-      max-height: 85vh;
-      display: flex;
-      justify-content: center;
-      align-items: flex-start;
-    }
+     .viewer {
+       background: rgba(0, 0, 0, 0.6);
+       border: 2px solid rgba(255, 107, 107, 0.2);
+       border-radius: 12px;
+       padding: 30px;
+       overflow-x: auto;
+       overflow-y: auto;
+       backdrop-filter: blur(10px);
+       box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+       min-height: 500px;
+       max-height: none;
+       display: flex;
+       justify-content: center;
+       align-items: flex-start;
+     }
+     
+     .controls select {
+       max-width: 100%;
+       width: 100%;
+       max-width: 500px;
+     }
     
     footer {
       text-align: center;
@@ -129,13 +137,175 @@
     <div class="controls">
       <label for="font-select">Font:</label>
       <select id="font-select" onchange="switchFont(this.value)">
-        <option value="Px437_IBM_VGA_8x16" selected>IBM VGA 8x16 (Default)</option>
-        <option value="Px437_IBM_VGA_9x16">IBM VGA 9x16</option>
-        <option value="Px437_IBM_EGA_8x14">IBM EGA 8x14</option>
-        <option value="Px437_IBM_BIOS">IBM BIOS</option>
-        <option value="Px437_IBM_CGA">IBM CGA</option>
-        <option value="Px437_DOS-V_re_JPN12">DOS-V Japanese</option>
-      </select>
+                <option value="Px437_IBM_VGA_8x16" selected>IBM VGA 8x16 (Default) (8x16)</option>
+        <option value="Px437_ACM_VGA_8x14">ACM VGA 8x14 (8x14)</option>
+        <option value="Px437_ACM_VGA_8x16">ACM VGA 8x16 (8x16)</option>
+        <option value="Px437_ACM_VGA_8x8">ACM VGA 8x8 (8x8)</option>
+        <option value="Px437_ACM_VGA_9x14">ACM VGA 9x14 (9x14)</option>
+        <option value="Px437_ACM_VGA_9x16">ACM VGA 9x16 (9x16)</option>
+        <option value="Px437_ACM_VGA_9x8">ACM VGA 9x8 (9x8)</option>
+        <option value="Px437_AMI_EGA_8x14">AMI EGA 8x14 (8x14)</option>
+        <option value="Px437_AMI_EGA_8x8">AMI EGA 8x8 (8x8)</option>
+        <option value="Px437_AMI_EGA_8x8-2y">AMI EGA 8x8 2y (8x8)</option>
+        <option value="Px437_AMI_EGA_9x14">AMI EGA 9x14 (9x14)</option>
+        <option value="Px437_ATI_8x14">ATI 8x14 (8x14)</option>
+        <option value="Px437_ATI_8x16">ATI 8x16 (8x16)</option>
+        <option value="Px437_ATI_8x8">ATI 8x8 (8x8)</option>
+        <option value="Px437_ATI_8x8-2y">ATI 8x8 2y (8x8)</option>
+        <option value="Px437_ATI_9x14">ATI 9x14 (9x14)</option>
+        <option value="Px437_ATI_9x16">ATI 9x16 (9x16)</option>
+        <option value="Px437_ATI_9x8">ATI 9x8 (9x8)</option>
+        <option value="Px437_ATI_SmallW_6x8">ATI SmallW 6x8 (6x8)</option>
+        <option value="Px437_Acer_VGA_8x8">Acer VGA 8x8 (8x8)</option>
+        <option value="Px437_Acer_VGA_8x8-2y">Acer VGA 8x8 2y (8x8)</option>
+        <option value="Px437_Acer_VGA_9x8">Acer VGA 9x8 (9x8)</option>
+        <option value="Px437_CL_EagleIII_8x16">CL EagleIII 8x16 (8x16)</option>
+        <option value="Px437_CL_EagleIII_9x16">CL EagleIII 9x16 (9x16)</option>
+        <option value="Px437_CL_EagleII_8x16">CL EagleII 8x16 (8x16)</option>
+        <option value="Px437_CL_EagleII_9x16">CL EagleII 9x16 (9x16)</option>
+        <option value="Px437_CL_Stingray_8x16">CL Stingray 8x16 (8x16)</option>
+        <option value="Px437_CL_Stingray_8x16_bold">CL Stingray 8x16 bold (8x16)</option>
+        <option value="Px437_CL_Stingray_8x19">CL Stingray 8x19 (8x19)</option>
+        <option value="Px437_CL_Stingray_8x19_bold">CL Stingray 8x19 bold (8x19)</option>
+        <option value="Px437_CompaqThin_8x14">CompaqThin 8x14 (8x14)</option>
+        <option value="Px437_CompaqThin_8x16">CompaqThin 8x16 (8x16)</option>
+        <option value="Px437_CompaqThin_8x8">CompaqThin 8x8 (8x8)</option>
+        <option value="Px437_EverexME_5x8">EverexME 5x8 (5x8)</option>
+        <option value="Px437_EverexME_7x8">EverexME 7x8 (7x8)</option>
+        <option value="Px437_EverexME_8x16">EverexME 8x16 (8x16)</option>
+        <option value="Px437_FMTowns_re_8x16">FMTowns re 8x16 (8x16)</option>
+        <option value="Px437_FMTowns_re_8x16-2x">FMTowns re 8x16 2x (8x16)</option>
+        <option value="Px437_FMTowns_re_8x8">FMTowns re 8x8 (8x8)</option>
+        <option value="Px437_HP_100LX_10x11">HP 100LX 10x11 (10x11)</option>
+        <option value="Px437_HP_100LX_16x12">HP 100LX 16x12 (16x12)</option>
+        <option value="Px437_HP_100LX_6x8">HP 100LX 6x8 (6x8)</option>
+        <option value="Px437_HP_100LX_6x8-2x">HP 100LX 6x8 2x (6x8)</option>
+        <option value="Px437_HP_100LX_8x8">HP 100LX 8x8 (8x8)</option>
+        <option value="Px437_HP_100LX_8x8-2x">HP 100LX 8x8 2x (8x8)</option>
+        <option value="Px437_IBM_EGA_8x14">IBM EGA 8x14 (8x14)</option>
+        <option value="Px437_IBM_EGA_8x14-2x">IBM EGA 8x14 2x (8x14)</option>
+        <option value="Px437_IBM_EGA_8x8">IBM EGA 8x8 (8x8)</option>
+        <option value="Px437_IBM_EGA_8x8-2x">IBM EGA 8x8 2x (8x8)</option>
+        <option value="Px437_IBM_EGA_9x14">IBM EGA 9x14 (9x14)</option>
+        <option value="Px437_IBM_EGA_9x14-2x">IBM EGA 9x14 2x (9x14)</option>
+        <option value="Px437_IBM_EGA_9x8">IBM EGA 9x8 (9x8)</option>
+        <option value="Px437_IBM_EGA_9x8-2x">IBM EGA 9x8 2x (9x8)</option>
+        <option value="Px437_IBM_VGA_8x14">IBM VGA 8x14 (8x14)</option>
+        <option value="Px437_IBM_VGA_8x14-2x">IBM VGA 8x14 2x (8x14)</option>
+        <option value="Px437_IBM_VGA_8x16-2x">IBM VGA 8x16 2x (8x16)</option>
+        <option value="Px437_IBM_VGA_9x14">IBM VGA 9x14 (9x14)</option>
+        <option value="Px437_IBM_VGA_9x14-2x">IBM VGA 9x14 2x (9x14)</option>
+        <option value="Px437_IBM_VGA_9x16">IBM VGA 9x16 (9x16)</option>
+        <option value="Px437_IBM_VGA_9x16-2x">IBM VGA 9x16 2x (9x16)</option>
+        <option value="Px437_IBM_VGA_9x8">IBM VGA 9x8 (9x8)</option>
+        <option value="Px437_IBM_VGA_9x8-2x">IBM VGA 9x8 2x (9x8)</option>
+        <option value="Px437_IBM_XGA-AI_12x20">IBM XGA AI 12x20 (12x20)</option>
+        <option value="Px437_IBM_XGA-AI_12x23">IBM XGA AI 12x23 (12x23)</option>
+        <option value="Px437_IBM_XGA-AI_7x15">IBM XGA AI 7x15 (7x15)</option>
+        <option value="Px437_IGS_VGA_8x16">IGS VGA 8x16 (8x16)</option>
+        <option value="Px437_IGS_VGA_9x16">IGS VGA 9x16 (9x16)</option>
+        <option value="Px437_MBytePC230_8x16">MBytePC230 8x16 (8x16)</option>
+        <option value="Px437_NEC_APC3_8x16">NEC APC3 8x16 (8x16)</option>
+        <option value="Px437_NEC_APC3_8x16-2x">NEC APC3 8x16 2x (8x16)</option>
+        <option value="Px437_NEC_APC3_8x8">NEC APC3 8x8 (8x8)</option>
+        <option value="Px437_NEC_APC3_8x8-2y">NEC APC3 8x8 2y (8x8)</option>
+        <option value="Px437_OlivettiThin_8x14">OlivettiThin 8x14 (8x14)</option>
+        <option value="Px437_OlivettiThin_8x16">OlivettiThin 8x16 (8x16)</option>
+        <option value="Px437_OlivettiThin_9x14">OlivettiThin 9x14 (9x14)</option>
+        <option value="Px437_OlivettiThin_9x16">OlivettiThin 9x16 (9x16)</option>
+        <option value="Px437_Paradise132_7x16">Paradise132 7x16 (7x16)</option>
+        <option value="Px437_Paradise132_7x9">Paradise132 7x9 (7x9)</option>
+        <option value="Px437_PhoenixEGA_8x14">PhoenixEGA 8x14 (8x14)</option>
+        <option value="Px437_PhoenixEGA_8x16">PhoenixEGA 8x16 (8x16)</option>
+        <option value="Px437_PhoenixEGA_8x8">PhoenixEGA 8x8 (8x8)</option>
+        <option value="Px437_PhoenixEGA_8x8-2y">PhoenixEGA 8x8 2y (8x8)</option>
+        <option value="Px437_PhoenixEGA_9x14">PhoenixEGA 9x14 (9x14)</option>
+        <option value="Px437_PhoenixVGA_8x14">PhoenixVGA 8x14 (8x14)</option>
+        <option value="Px437_PhoenixVGA_8x16">PhoenixVGA 8x16 (8x16)</option>
+        <option value="Px437_PhoenixVGA_8x8">PhoenixVGA 8x8 (8x8)</option>
+        <option value="Px437_PhoenixVGA_9x14">PhoenixVGA 9x14 (9x14)</option>
+        <option value="Px437_PhoenixVGA_9x16">PhoenixVGA 9x16 (9x16)</option>
+        <option value="Px437_PhoenixVGA_9x8">PhoenixVGA 9x8 (9x8)</option>
+        <option value="Px437_Portfolio_6x8">Portfolio 6x8 (6x8)</option>
+        <option value="Px437_STB_AutoEGA_8x14">STB AutoEGA 8x14 (8x14)</option>
+        <option value="Px437_STB_AutoEGA_9x14">STB AutoEGA 9x14 (9x14)</option>
+        <option value="Px437_Sigma_RM_8x14">Sigma RM 8x14 (8x14)</option>
+        <option value="Px437_Sigma_RM_8x16">Sigma RM 8x16 (8x16)</option>
+        <option value="Px437_Sigma_RM_8x8">Sigma RM 8x8 (8x8)</option>
+        <option value="Px437_Sigma_RM_9x14">Sigma RM 9x14 (9x14)</option>
+        <option value="Px437_Sigma_RM_9x16">Sigma RM 9x16 (9x16)</option>
+        <option value="Px437_Sigma_RM_9x8">Sigma RM 9x8 (9x8)</option>
+        <option value="Px437_SperryPC_8x16">SperryPC 8x16 (8x16)</option>
+        <option value="Px437_ToshibaSat_8x14">ToshibaSat 8x14 (8x14)</option>
+        <option value="Px437_ToshibaSat_8x16">ToshibaSat 8x16 (8x16)</option>
+        <option value="Px437_ToshibaSat_8x8">ToshibaSat 8x8 (8x8)</option>
+        <option value="Px437_ToshibaSat_9x14">ToshibaSat 9x14 (9x14)</option>
+        <option value="Px437_ToshibaSat_9x16">ToshibaSat 9x16 (9x16)</option>
+        <option value="Px437_ToshibaSat_9x8">ToshibaSat 9x8 (9x8)</option>
+        <option value="Px437_ToshibaT300_8x16">ToshibaT300 8x16 (8x16)</option>
+        <option value="Px437_ToshibaT300_8x8">ToshibaT300 8x8 (8x8)</option>
+        <option value="Px437_ToshibaT300_8x8-2y">ToshibaT300 8x8 2y (8x8)</option>
+        <option value="Px437_ToshibaTxL1_8x16">ToshibaTxL1 8x16 (8x16)</option>
+        <option value="Px437_ToshibaTxL1_8x8">ToshibaTxL1 8x8 (8x8)</option>
+        <option value="Px437_ToshibaTxL2_8x16">ToshibaTxL2 8x16 (8x16)</option>
+        <option value="Px437_ToshibaTxL2_8x8">ToshibaTxL2 8x8 (8x8)</option>
+        <option value="Px437_TridentEarly_8x11">TridentEarly 8x11 (8x11)</option>
+        <option value="Px437_TridentEarly_8x14">TridentEarly 8x14 (8x14)</option>
+        <option value="Px437_TridentEarly_8x16">TridentEarly 8x16 (8x16)</option>
+        <option value="Px437_TridentEarly_8x8">TridentEarly 8x8 (8x8)</option>
+        <option value="Px437_TridentEarly_9x14">TridentEarly 9x14 (9x14)</option>
+        <option value="Px437_TridentEarly_9x16">TridentEarly 9x16 (9x16)</option>
+        <option value="Px437_TridentEarly_9x8">TridentEarly 9x8 (9x8)</option>
+        <option value="Px437_Trident_8x11">Trident 8x11 (8x11)</option>
+        <option value="Px437_Trident_8x14">Trident 8x14 (8x14)</option>
+        <option value="Px437_Trident_8x16">Trident 8x16 (8x16)</option>
+        <option value="Px437_Trident_8x8">Trident 8x8 (8x8)</option>
+        <option value="Px437_Trident_9x14">Trident 9x14 (9x14)</option>
+        <option value="Px437_Trident_9x16">Trident 9x16 (9x16)</option>
+        <option value="Px437_Trident_9x8">Trident 9x8 (9x8)</option>
+        <option value="Px437_TsengEVA_132_6x14">TsengEVA 132 6x14 (6x14)</option>
+        <option value="Px437_TsengEVA_132_6x8">TsengEVA 132 6x8 (6x8)</option>
+        <option value="Px437_Verite_8x14">Verite 8x14 (8x14)</option>
+        <option value="Px437_Verite_8x16">Verite 8x16 (8x16)</option>
+        <option value="Px437_Verite_8x8">Verite 8x8 (8x8)</option>
+        <option value="Px437_Verite_8x8-2y">Verite 8x8 2y (8x8)</option>
+        <option value="Px437_Verite_9x14">Verite 9x14 (9x14)</option>
+        <option value="Px437_Verite_9x16">Verite 9x16 (9x16)</option>
+        <option value="Px437_Verite_9x8">Verite 9x8 (9x8)</option>
+        <option value="PxPlus_HP_100LX_10x11">HP 100LX 10x11 (10x11)</option>
+        <option value="PxPlus_HP_100LX_16x12">HP 100LX 16x12 (16x12)</option>
+        <option value="PxPlus_HP_100LX_6x8">HP 100LX 6x8 (6x8)</option>
+        <option value="PxPlus_HP_100LX_6x8-2x">HP 100LX 6x8 2x (6x8)</option>
+        <option value="PxPlus_HP_100LX_8x8">HP 100LX 8x8 (8x8)</option>
+        <option value="PxPlus_HP_100LX_8x8-2x">HP 100LX 8x8 2x (8x8)</option>
+        <option value="PxPlus_IBM_EGA_8x14">IBM EGA 8x14 (8x14)</option>
+        <option value="PxPlus_IBM_EGA_8x14-2x">IBM EGA 8x14 2x (8x14)</option>
+        <option value="PxPlus_IBM_EGA_8x8">IBM EGA 8x8 (8x8)</option>
+        <option value="PxPlus_IBM_EGA_8x8-2x">IBM EGA 8x8 2x (8x8)</option>
+        <option value="PxPlus_IBM_EGA_9x14">IBM EGA 9x14 (9x14)</option>
+        <option value="PxPlus_IBM_EGA_9x14-2x">IBM EGA 9x14 2x (9x14)</option>
+        <option value="PxPlus_IBM_EGA_9x8">IBM EGA 9x8 (9x8)</option>
+        <option value="PxPlus_IBM_EGA_9x8-2x">IBM EGA 9x8 2x (9x8)</option>
+        <option value="PxPlus_IBM_VGA_8x14">IBM VGA 8x14 (8x14)</option>
+        <option value="PxPlus_IBM_VGA_8x14-2x">IBM VGA 8x14 2x (8x14)</option>
+        <option value="PxPlus_IBM_VGA_8x16">IBM VGA 8x16 (8x16)</option>
+        <option value="PxPlus_IBM_VGA_8x16-2x">IBM VGA 8x16 2x (8x16)</option>
+        <option value="PxPlus_IBM_VGA_9x14">IBM VGA 9x14 (9x14)</option>
+        <option value="PxPlus_IBM_VGA_9x14-2x">IBM VGA 9x14 2x (9x14)</option>
+        <option value="PxPlus_IBM_VGA_9x16">IBM VGA 9x16 (9x16)</option>
+        <option value="PxPlus_IBM_VGA_9x16-2x">IBM VGA 9x16 2x (9x16)</option>
+        <option value="PxPlus_IBM_VGA_9x8">IBM VGA 9x8 (9x8)</option>
+        <option value="PxPlus_IBM_VGA_9x8-2x">IBM VGA 9x8 2x (9x8)</option>
+        <option value="PxPlus_IBM_XGA-AI_12x20">IBM XGA AI 12x20 (12x20)</option>
+        <option value="PxPlus_ToshibaSat_8x14">ToshibaSat 8x14 (8x14)</option>
+        <option value="PxPlus_ToshibaSat_8x16">ToshibaSat 8x16 (8x16)</option>
+        <option value="PxPlus_ToshibaSat_8x8">ToshibaSat 8x8 (8x8)</option>
+        <option value="PxPlus_ToshibaSat_9x14">ToshibaSat 9x14 (9x14)</option>
+        <option value="PxPlus_ToshibaSat_9x16">ToshibaSat 9x16 (9x16)</option>
+        <option value="PxPlus_ToshibaSat_9x8">ToshibaSat 9x8 (9x8)</option>
+        <option value="PxPlus_ToshibaTxL1_8x16">ToshibaTxL1 8x16 (8x16)</option>
+        <option value="PxPlus_ToshibaTxL2_8x16">ToshibaTxL2 8x16 (8x16)</option>
+</select>
     </div>
     
     <div class="viewer">
@@ -217,13 +387,175 @@ ansi-art .bold { font-weight: bold; }
 <script>
 (function() {
   const FONT_DATA = {
-    'Px437_IBM_VGA_8x16': {width: 8, height: 16},
-    'Px437_IBM_VGA_9x16': {width: 9, height: 16},
-    'Px437_IBM_EGA_8x14': {width: 8, height: 14},
-    'Px437_IBM_BIOS': {width: 8, height: 16},
-    'Px437_IBM_CGA': {width: 8, height: 16},
-    'Px437_DOS-V_re_JPN12': {width: 10, height: 20}
-  };
+      'Px437_ACM_VGA_8x14': {width: 8, height: 14},
+      'Px437_ACM_VGA_8x16': {width: 8, height: 16},
+      'Px437_ACM_VGA_8x8': {width: 8, height: 8},
+      'Px437_ACM_VGA_9x14': {width: 9, height: 14},
+      'Px437_ACM_VGA_9x16': {width: 9, height: 16},
+      'Px437_ACM_VGA_9x8': {width: 9, height: 8},
+      'Px437_AMI_EGA_8x14': {width: 8, height: 14},
+      'Px437_AMI_EGA_8x8': {width: 8, height: 8},
+      'Px437_AMI_EGA_8x8-2y': {width: 8, height: 8},
+      'Px437_AMI_EGA_9x14': {width: 9, height: 14},
+      'Px437_ATI_8x14': {width: 8, height: 14},
+      'Px437_ATI_8x16': {width: 8, height: 16},
+      'Px437_ATI_8x8': {width: 8, height: 8},
+      'Px437_ATI_8x8-2y': {width: 8, height: 8},
+      'Px437_ATI_9x14': {width: 9, height: 14},
+      'Px437_ATI_9x16': {width: 9, height: 16},
+      'Px437_ATI_9x8': {width: 9, height: 8},
+      'Px437_ATI_SmallW_6x8': {width: 6, height: 8},
+      'Px437_Acer_VGA_8x8': {width: 8, height: 8},
+      'Px437_Acer_VGA_8x8-2y': {width: 8, height: 8},
+      'Px437_Acer_VGA_9x8': {width: 9, height: 8},
+      'Px437_CL_EagleIII_8x16': {width: 8, height: 16},
+      'Px437_CL_EagleIII_9x16': {width: 9, height: 16},
+      'Px437_CL_EagleII_8x16': {width: 8, height: 16},
+      'Px437_CL_EagleII_9x16': {width: 9, height: 16},
+      'Px437_CL_Stingray_8x16': {width: 8, height: 16},
+      'Px437_CL_Stingray_8x16_bold': {width: 8, height: 16},
+      'Px437_CL_Stingray_8x19': {width: 8, height: 19},
+      'Px437_CL_Stingray_8x19_bold': {width: 8, height: 19},
+      'Px437_CompaqThin_8x14': {width: 8, height: 14},
+      'Px437_CompaqThin_8x16': {width: 8, height: 16},
+      'Px437_CompaqThin_8x8': {width: 8, height: 8},
+      'Px437_EverexME_5x8': {width: 5, height: 8},
+      'Px437_EverexME_7x8': {width: 7, height: 8},
+      'Px437_EverexME_8x16': {width: 8, height: 16},
+      'Px437_FMTowns_re_8x16': {width: 8, height: 16},
+      'Px437_FMTowns_re_8x16-2x': {width: 8, height: 16},
+      'Px437_FMTowns_re_8x8': {width: 8, height: 8},
+      'Px437_HP_100LX_10x11': {width: 10, height: 11},
+      'Px437_HP_100LX_16x12': {width: 16, height: 12},
+      'Px437_HP_100LX_6x8': {width: 6, height: 8},
+      'Px437_HP_100LX_6x8-2x': {width: 6, height: 8},
+      'Px437_HP_100LX_8x8': {width: 8, height: 8},
+      'Px437_HP_100LX_8x8-2x': {width: 8, height: 8},
+      'Px437_IBM_EGA_8x14': {width: 8, height: 14},
+      'Px437_IBM_EGA_8x14-2x': {width: 8, height: 14},
+      'Px437_IBM_EGA_8x8': {width: 8, height: 8},
+      'Px437_IBM_EGA_8x8-2x': {width: 8, height: 8},
+      'Px437_IBM_EGA_9x14': {width: 9, height: 14},
+      'Px437_IBM_EGA_9x14-2x': {width: 9, height: 14},
+      'Px437_IBM_EGA_9x8': {width: 9, height: 8},
+      'Px437_IBM_EGA_9x8-2x': {width: 9, height: 8},
+      'Px437_IBM_VGA_8x14': {width: 8, height: 14},
+      'Px437_IBM_VGA_8x14-2x': {width: 8, height: 14},
+      'Px437_IBM_VGA_8x16': {width: 8, height: 16},
+      'Px437_IBM_VGA_8x16-2x': {width: 8, height: 16},
+      'Px437_IBM_VGA_9x14': {width: 9, height: 14},
+      'Px437_IBM_VGA_9x14-2x': {width: 9, height: 14},
+      'Px437_IBM_VGA_9x16': {width: 9, height: 16},
+      'Px437_IBM_VGA_9x16-2x': {width: 9, height: 16},
+      'Px437_IBM_VGA_9x8': {width: 9, height: 8},
+      'Px437_IBM_VGA_9x8-2x': {width: 9, height: 8},
+      'Px437_IBM_XGA-AI_12x20': {width: 12, height: 20},
+      'Px437_IBM_XGA-AI_12x23': {width: 12, height: 23},
+      'Px437_IBM_XGA-AI_7x15': {width: 7, height: 15},
+      'Px437_IGS_VGA_8x16': {width: 8, height: 16},
+      'Px437_IGS_VGA_9x16': {width: 9, height: 16},
+      'Px437_MBytePC230_8x16': {width: 8, height: 16},
+      'Px437_NEC_APC3_8x16': {width: 8, height: 16},
+      'Px437_NEC_APC3_8x16-2x': {width: 8, height: 16},
+      'Px437_NEC_APC3_8x8': {width: 8, height: 8},
+      'Px437_NEC_APC3_8x8-2y': {width: 8, height: 8},
+      'Px437_OlivettiThin_8x14': {width: 8, height: 14},
+      'Px437_OlivettiThin_8x16': {width: 8, height: 16},
+      'Px437_OlivettiThin_9x14': {width: 9, height: 14},
+      'Px437_OlivettiThin_9x16': {width: 9, height: 16},
+      'Px437_Paradise132_7x16': {width: 7, height: 16},
+      'Px437_Paradise132_7x9': {width: 7, height: 9},
+      'Px437_PhoenixEGA_8x14': {width: 8, height: 14},
+      'Px437_PhoenixEGA_8x16': {width: 8, height: 16},
+      'Px437_PhoenixEGA_8x8': {width: 8, height: 8},
+      'Px437_PhoenixEGA_8x8-2y': {width: 8, height: 8},
+      'Px437_PhoenixEGA_9x14': {width: 9, height: 14},
+      'Px437_PhoenixVGA_8x14': {width: 8, height: 14},
+      'Px437_PhoenixVGA_8x16': {width: 8, height: 16},
+      'Px437_PhoenixVGA_8x8': {width: 8, height: 8},
+      'Px437_PhoenixVGA_9x14': {width: 9, height: 14},
+      'Px437_PhoenixVGA_9x16': {width: 9, height: 16},
+      'Px437_PhoenixVGA_9x8': {width: 9, height: 8},
+      'Px437_Portfolio_6x8': {width: 6, height: 8},
+      'Px437_STB_AutoEGA_8x14': {width: 8, height: 14},
+      'Px437_STB_AutoEGA_9x14': {width: 9, height: 14},
+      'Px437_Sigma_RM_8x14': {width: 8, height: 14},
+      'Px437_Sigma_RM_8x16': {width: 8, height: 16},
+      'Px437_Sigma_RM_8x8': {width: 8, height: 8},
+      'Px437_Sigma_RM_9x14': {width: 9, height: 14},
+      'Px437_Sigma_RM_9x16': {width: 9, height: 16},
+      'Px437_Sigma_RM_9x8': {width: 9, height: 8},
+      'Px437_SperryPC_8x16': {width: 8, height: 16},
+      'Px437_ToshibaSat_8x14': {width: 8, height: 14},
+      'Px437_ToshibaSat_8x16': {width: 8, height: 16},
+      'Px437_ToshibaSat_8x8': {width: 8, height: 8},
+      'Px437_ToshibaSat_9x14': {width: 9, height: 14},
+      'Px437_ToshibaSat_9x16': {width: 9, height: 16},
+      'Px437_ToshibaSat_9x8': {width: 9, height: 8},
+      'Px437_ToshibaT300_8x16': {width: 8, height: 16},
+      'Px437_ToshibaT300_8x8': {width: 8, height: 8},
+      'Px437_ToshibaT300_8x8-2y': {width: 8, height: 8},
+      'Px437_ToshibaTxL1_8x16': {width: 8, height: 16},
+      'Px437_ToshibaTxL1_8x8': {width: 8, height: 8},
+      'Px437_ToshibaTxL2_8x16': {width: 8, height: 16},
+      'Px437_ToshibaTxL2_8x8': {width: 8, height: 8},
+      'Px437_TridentEarly_8x11': {width: 8, height: 11},
+      'Px437_TridentEarly_8x14': {width: 8, height: 14},
+      'Px437_TridentEarly_8x16': {width: 8, height: 16},
+      'Px437_TridentEarly_8x8': {width: 8, height: 8},
+      'Px437_TridentEarly_9x14': {width: 9, height: 14},
+      'Px437_TridentEarly_9x16': {width: 9, height: 16},
+      'Px437_TridentEarly_9x8': {width: 9, height: 8},
+      'Px437_Trident_8x11': {width: 8, height: 11},
+      'Px437_Trident_8x14': {width: 8, height: 14},
+      'Px437_Trident_8x16': {width: 8, height: 16},
+      'Px437_Trident_8x8': {width: 8, height: 8},
+      'Px437_Trident_9x14': {width: 9, height: 14},
+      'Px437_Trident_9x16': {width: 9, height: 16},
+      'Px437_Trident_9x8': {width: 9, height: 8},
+      'Px437_TsengEVA_132_6x14': {width: 6, height: 14},
+      'Px437_TsengEVA_132_6x8': {width: 6, height: 8},
+      'Px437_Verite_8x14': {width: 8, height: 14},
+      'Px437_Verite_8x16': {width: 8, height: 16},
+      'Px437_Verite_8x8': {width: 8, height: 8},
+      'Px437_Verite_8x8-2y': {width: 8, height: 8},
+      'Px437_Verite_9x14': {width: 9, height: 14},
+      'Px437_Verite_9x16': {width: 9, height: 16},
+      'Px437_Verite_9x8': {width: 9, height: 8},
+      'PxPlus_HP_100LX_10x11': {width: 10, height: 11},
+      'PxPlus_HP_100LX_16x12': {width: 16, height: 12},
+      'PxPlus_HP_100LX_6x8': {width: 6, height: 8},
+      'PxPlus_HP_100LX_6x8-2x': {width: 6, height: 8},
+      'PxPlus_HP_100LX_8x8': {width: 8, height: 8},
+      'PxPlus_HP_100LX_8x8-2x': {width: 8, height: 8},
+      'PxPlus_IBM_EGA_8x14': {width: 8, height: 14},
+      'PxPlus_IBM_EGA_8x14-2x': {width: 8, height: 14},
+      'PxPlus_IBM_EGA_8x8': {width: 8, height: 8},
+      'PxPlus_IBM_EGA_8x8-2x': {width: 8, height: 8},
+      'PxPlus_IBM_EGA_9x14': {width: 9, height: 14},
+      'PxPlus_IBM_EGA_9x14-2x': {width: 9, height: 14},
+      'PxPlus_IBM_EGA_9x8': {width: 9, height: 8},
+      'PxPlus_IBM_EGA_9x8-2x': {width: 9, height: 8},
+      'PxPlus_IBM_VGA_8x14': {width: 8, height: 14},
+      'PxPlus_IBM_VGA_8x14-2x': {width: 8, height: 14},
+      'PxPlus_IBM_VGA_8x16': {width: 8, height: 16},
+      'PxPlus_IBM_VGA_8x16-2x': {width: 8, height: 16},
+      'PxPlus_IBM_VGA_9x14': {width: 9, height: 14},
+      'PxPlus_IBM_VGA_9x14-2x': {width: 9, height: 14},
+      'PxPlus_IBM_VGA_9x16': {width: 9, height: 16},
+      'PxPlus_IBM_VGA_9x16-2x': {width: 9, height: 16},
+      'PxPlus_IBM_VGA_9x8': {width: 9, height: 8},
+      'PxPlus_IBM_VGA_9x8-2x': {width: 9, height: 8},
+      'PxPlus_IBM_XGA-AI_12x20': {width: 12, height: 20},
+      'PxPlus_ToshibaSat_8x14': {width: 8, height: 14},
+      'PxPlus_ToshibaSat_8x16': {width: 8, height: 16},
+      'PxPlus_ToshibaSat_8x8': {width: 8, height: 8},
+      'PxPlus_ToshibaSat_9x14': {width: 9, height: 14},
+      'PxPlus_ToshibaSat_9x16': {width: 9, height: 16},
+      'PxPlus_ToshibaSat_9x8': {width: 9, height: 8},
+      'PxPlus_ToshibaTxL1_8x16': {width: 8, height: 16},
+      'PxPlus_ToshibaTxL2_8x16': {width: 8, height: 16},
+    };
   
   const component = document.currentScript.parentElement;
   const pre = component.querySelector('pre');
