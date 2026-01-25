@@ -777,12 +777,12 @@ static void output_ansi_art_component(Screen *screen) {
             char style_str[256] = "";
             int style_len = 0;
             
-            /* Add absolute positioning style */
-            int left_px = col * char_width;
-            int top_px = row * char_height;
-            style_len += snprintf(style_str + style_len, sizeof(style_str) - style_len,
-                                 "position: absolute; left: %dpx; top: %dpx; width: %dpx; height: %dpx; overflow: hidden;",
-                                 left_px, top_px, char_width, char_height);
+             /* Add absolute positioning style */
+             int left_px = col * char_width;
+             int top_px = row * char_height;
+             style_len += snprintf(style_str + style_len, sizeof(style_str) - style_len,
+                                  "position: absolute; left: %dpx; top: %dpx; width: %dpx; height: %dpx; overflow: visible;",
+                                  left_px, top_px, char_width, char_height);
             
             if (opt_truecolor) {
                 if (cell->fg >= 0x1000000) {
