@@ -264,9 +264,8 @@ ansi-art .bold { font-weight: bold; }
 
   <script>
     function switchFont(fontName) {
-      const component = document.querySelector('ansi-art');
-      if (component && typeof component.switchComponentFont === 'function') {
-        component.switchComponentFont(fontName);
+      if (typeof window.switchComponentFont === 'function') {
+        window.switchComponentFont(fontName);
       }
     }
   </script>
