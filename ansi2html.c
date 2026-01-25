@@ -536,26 +536,48 @@ static void output_html(Screen *screen) {
         total_cols = 1;
     }
     
-    /* HTML header */
-    printf("<!DOCTYPE html>\n");
-    printf("<html>\n");
-    printf("<head>\n");
-    printf("<meta charset=\"UTF-8\">\n");
-    printf("<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n");
-    printf("<title>ANSI Art</title>\n");
-    printf("<style>\n");
+     /* HTML header */
+     printf("<!DOCTYPE html>\n");
+     printf("<html>\n");
+     printf("<head>\n");
+     printf("<meta charset=\"UTF-8\">\n");
+     printf("<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n");
+     printf("<title>ANSI Art</title>\n");
+     printf("<!-- ANSI Art Metadata -->\n");
+     printf("<!-- Width: %d characters -->\n", total_cols);
+     printf("<!-- Height: %d lines -->\n", total_rows);
+     printf("<!-- Font Size: 16px (Px437 fonts are pixel-perfect) -->\n");
+     printf("<!-- Line Height: 1.0 (terminal-accurate) -->\n");
+     printf("<!-- Character Grid: Monospace 1:1 cell ratio -->\n");
+     printf("<style>\n");
+     
+     /* Global CSS reset - remove all browser defaults */
+     printf("/* Global reset - remove all browser defaults */\n");
+     printf("* {\n");
+     printf("  margin: 0;\n");
+     printf("  padding: 0;\n");
+     printf("  border: 0;\n");
+     printf("  box-sizing: border-box;\n");
+     printf("  text-decoration: none;\n");
+     printf("  text-transform: none;\n");
+     printf("  font-style: normal;\n");
+     printf("  font-weight: normal;\n");
+     printf("  font-variant: normal;\n");
+     printf("  font-variant-ligatures: none;\n");
+     printf("  line-height: 1;\n");
+     printf("}\n");
+     
+     /* Font declarations */
+     generate_font_list();
     
-    /* Font declarations */
-    generate_font_list();
-    
-    /* Base styles */
-    printf("body {\n");
-    printf("  background-color: #000000;\n");
-    printf("  margin: 0;\n");
-    printf("  padding: 0;\n");
-    printf("  color: #aaaaaa;\n");
-    printf("  font-family: sans-serif;\n");
-    printf("}\n");
+     /* Base styles */
+     printf("body {\n");
+     printf("  background-color: #000000;\n");
+     printf("  margin: 0;\n");
+     printf("  padding: 0;\n");
+     printf("  color: #aaaaaa;\n");
+     printf("  font-family: monospace;\n");
+     printf("}\n");
     printf(".controls {\n");
     printf("  background-color: #1a1a1a;\n");
     printf("  padding: 10px 20px;\n");
@@ -575,24 +597,33 @@ static void output_html(Screen *screen) {
     printf("  border-radius: 3px;\n");
     printf("  font-size: 14px;\n");
     printf("}\n");
-    printf(".content {\n");
-    printf("  padding: 20px;\n");
-    printf("  overflow: auto;\n");
-    printf("}\n");
-    printf("pre.ansi-art {\n");
-    printf("  font-family: '%s', 'Courier New', monospace;\n", font_list[0]);
-    printf("  font-size: 16px;\n");
-    printf("  line-height: 1.2;\n");
-    printf("  margin: 0;\n");
-    printf("  padding: 0;\n");
-    printf("  letter-spacing: 0;\n");
-    printf("  word-spacing: 0;\n");
-    printf("}\n");
-    printf("pre.ansi-art span {\n");
-    printf("  font-family: inherit;\n");
-    printf("  font-size: inherit;\n");
-    printf("  line-height: inherit;\n");
-    printf("}\n");
+     printf(".content {\n");
+     printf("  padding: 0;\n");
+     printf("  overflow: auto;\n");
+     printf("}\n");
+     printf("pre.ansi-art {\n");
+     printf("  font-family: '%s', 'Courier New', monospace;\n", font_list[0]);
+     printf("  font-size: 16px;\n");
+     printf("  line-height: 1.0;\n");
+     printf("  margin: 0;\n");
+     printf("  padding: 0;\n");
+     printf("  letter-spacing: 0;\n");
+     printf("  word-spacing: 0;\n");
+     printf("  text-rendering: geometricPrecision;\n");
+     printf("  font-variant-ligatures: none;\n");
+     printf("  white-space: pre;\n");
+     printf("  word-wrap: normal;\n");
+     printf("  display: block;\n");
+     printf("}\n");
+     printf("pre.ansi-art span {\n");
+     printf("  font-family: inherit;\n");
+     printf("  font-size: inherit;\n");
+     printf("  line-height: inherit;\n");
+     printf("  text-rendering: geometricPrecision;\n");
+     printf("  font-variant-ligatures: none;\n");
+     printf("  text-decoration: none;\n");
+     printf("  display: inline;\n");
+     printf("}\n");
     
     /* Color classes */
     for (int i = 0; i < 16; i++) {
