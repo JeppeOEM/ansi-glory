@@ -55,6 +55,7 @@ typedef struct {
 /* Global options */
 static bool opt_truecolor = false;
 static bool opt_utf8 = false;
+static bool opt_component_mode = true;  /* Output web component by default */
 
 /* Standard ANSI colors (CGA palette) */
 static const char *ansi_colors[16] = {
@@ -134,6 +135,7 @@ static void state_reset(State *state);
 static unsigned char *read_all_stdin(size_t *out_size);
 static int convert_256_to_rgb(int n);
 static void parse_ansi(Screen *screen, State *state, const unsigned char *data, size_t size);
+static void output_ansi_art_component(Screen *screen);
 static void output_html(Screen *screen);
 static void print_usage(const char *prog);
 
@@ -641,6 +643,225 @@ static void generate_font_list(void) {
     }
 }
 
+/* Output the ANSI art as a self-contained web component */
+static void output_ansi_art_component(Screen *screen) {
+    int total_rows = screen->max_row + 1;
+    int total_cols = screen->max_col + 1;
+    
+    if (total_rows <= 0 || total_cols <= 0) {
+        total_rows = 1;
+        total_cols = 1;
+    }
+    
+    /* Use default font: Px437_IBM_VGA_8x16 (8x16 pixels) */
+    const FontMetadata *default_font = &font_info[0];  /* Px437_IBM_VGA_8x16 */
+    int char_width = default_font->width;   /* 8 */
+    int char_height = default_font->height; /* 16 */
+    int container_width = total_cols * char_width;
+    int container_height = total_rows * char_height;
+    
+    /* Open ansi-art web component */
+    printf("<ansi-art data-width=\"%d\" data-height=\"%d\" data-font=\"%s\" data-char-width=\"%d\" data-char-height=\"%d\">\n",
+           total_cols, total_rows, default_font->name, char_width, char_height);
+    
+    /* Open style tag - CSS is scoped to ansi-art selector */
+    printf("<style>\n");
+    printf("ansi-art {\n");
+    printf("  display: block;\n");
+    printf("  position: relative;\n");
+    printf("}\n");
+    printf("ansi-art pre {\n");
+    printf("  position: relative;\n");
+    printf("  margin: 0;\n");
+    printf("  padding: 0;\n");
+    printf("  white-space: pre;\n");
+    printf("  font-family: 'Px437_IBM_VGA_8x16', 'Courier New', monospace;\n");
+    printf("  font-size: 16px;\n");
+    printf("  line-height: 1.0;\n");
+    printf("  letter-spacing: 0;\n");
+    printf("  word-spacing: 0;\n");
+    printf("  text-rendering: geometricPrecision;\n");
+    printf("  -webkit-font-smoothing: none;\n");
+    printf("  font-variant-ligatures: none;\n");
+    printf("  font-kerning: none;\n");
+    printf("  font-feature-settings: 'kern' 0, 'liga' 0;\n");
+    printf("}\n");
+    printf("ansi-art span {\n");
+    printf("  position: absolute;\n");
+    printf("  margin: 0;\n");
+    printf("  padding: 0;\n");
+    printf("  border: 0;\n");
+    printf("  overflow: hidden;\n");
+    printf("  font-family: inherit;\n");
+    printf("  font-size: inherit;\n");
+    printf("  line-height: inherit;\n");
+    printf("  letter-spacing: inherit;\n");
+    printf("  word-spacing: inherit;\n");
+    printf("  text-rendering: geometricPrecision;\n");
+    printf("  -webkit-font-smoothing: none;\n");
+    printf("  font-variant-ligatures: none;\n");
+    printf("  font-kerning: none;\n");
+    printf("  font-feature-settings: 'kern' 0, 'liga' 0;\n");
+    printf("}\n");
+    
+    /* Color classes - scoped to ansi-art */
+    for (int i = 0; i < 16; i++) {
+        printf("ansi-art .fg-%d { color: %s; }\n", i, ansi_colors[i]);
+    }
+    for (int i = 0; i < 16; i++) {
+        printf("ansi-art .bg-%d { background-color: %s; }\n", i, ansi_colors[i]);
+    }
+    printf("ansi-art .bold { font-weight: bold; }\n");
+    printf("</style>\n");
+    
+    /* Pre element with absolute positioning container */
+    printf("<pre style=\"position: relative; width: %dpx; height: %dpx;\" data-cols=\"%d\" data-rows=\"%d\">\n",
+           container_width, container_height, total_cols, total_rows);
+    
+    /* Output characters with absolute positioning */
+    int char_id = 0;
+    for (int row = 0; row < total_rows; row++) {
+        /* Calculate actual content end for this row */
+        int row_content_end = 0;
+        
+        /* Find RIGHTMOST non-space content (regardless of styling) */
+        for (int col = total_cols - 1; col >= 0; col--) {
+            Cell *cell = &screen->cells[row][col];
+            if (cell->codepoint != 0 && cell->codepoint != ' ') {
+                row_content_end = col + 1;
+                break;
+            }
+        }
+        
+        /* ALSO check for any cells with explicit styling (non-default colors) */
+        for (int col = 0; col < total_cols; col++) {
+            Cell *cell = &screen->cells[row][col];
+            /* Include if it has non-default styling */
+            if ((cell->fg >= 0 && cell->fg < 16 && cell->fg != 7) ||
+                (cell->bg >= 0 && cell->bg != 0) ||
+                cell->bold) {
+                /* Update content end if this styled cell is past current end */
+                if (col + 1 > row_content_end) {
+                    row_content_end = col + 1;
+                }
+            }
+        }
+        
+        /* Output up to content end */
+        int output_cols = (row_content_end > 0) ? row_content_end : 1;
+        
+        for (int col = 0; col < output_cols; col++) {
+            Cell *cell = &screen->cells[row][col];
+            
+            /* Build class string */
+            char class_str[256] = "";
+            int class_len = 0;
+            
+            if (cell->fg >= 0 && cell->fg < 16) {
+                class_len += snprintf(class_str + class_len, sizeof(class_str) - class_len, 
+                                      "fg-%d", cell->fg);
+            }
+            
+            if (cell->bg >= 0 && cell->bg < 16 && cell->bg != 0) {
+                if (class_len > 0) class_str[class_len++] = ' ';
+                class_len += snprintf(class_str + class_len, sizeof(class_str) - class_len,
+                                      "bg-%d", cell->bg);
+            }
+            
+            if (cell->bold) {
+                if (class_len > 0) class_str[class_len++] = ' ';
+                class_len += snprintf(class_str + class_len, sizeof(class_str) - class_len, "bold");
+            }
+            
+            /* Build inline style for true colors */
+            char style_str[256] = "";
+            int style_len = 0;
+            
+            /* Add absolute positioning style */
+            int left_px = col * char_width;
+            int top_px = row * char_height;
+            style_len += snprintf(style_str + style_len, sizeof(style_str) - style_len,
+                                 "position: absolute; left: %dpx; top: %dpx; width: %dpx; height: %dpx; overflow: hidden;",
+                                 left_px, top_px, char_width, char_height);
+            
+            if (opt_truecolor) {
+                if (cell->fg >= 0x1000000) {
+                    int rgb = cell->fg & 0xFFFFFF;
+                    style_len += snprintf(style_str + style_len, sizeof(style_str) - style_len,
+                                         "color:#%06x;", rgb);
+                }
+                if (cell->bg >= 0x1000000) {
+                    int rgb = cell->bg & 0xFFFFFF;
+                    style_len += snprintf(style_str + style_len, sizeof(style_str) - style_len,
+                                         "background-color:#%06x;", rgb);
+                }
+            }
+            
+            /* Output span */
+            printf("<span data-id=\"%d\" data-row=\"%d\" data-col=\"%d\"",
+                   char_id++, row, col);
+            
+            if (class_str[0]) {
+                printf(" class=\"%s\"", class_str);
+            }
+            if (style_str[0]) {
+                printf(" style=\"%s\"", style_str);
+            }
+            
+            printf(">");
+            output_char_escaped(cell->codepoint);
+            printf("</span>");
+        }
+        /* End of row - no newline in pre since we use absolute positioning */
+    }
+    
+    printf("</pre>\n");
+    
+    /* Component JavaScript for font switching */
+    printf("<script>\n");
+    printf("(function() {\n");
+    printf("  const FONT_DATA = {\n");
+    printf("    'Px437_IBM_VGA_8x16': {width: 8, height: 16},\n");
+    printf("    'Px437_IBM_VGA_9x16': {width: 9, height: 16},\n");
+    printf("    'Px437_IBM_EGA_8x14': {width: 8, height: 14},\n");
+    printf("    'Px437_IBM_BIOS': {width: 8, height: 16},\n");
+    printf("    'Px437_IBM_CGA': {width: 8, height: 16},\n");
+    printf("    'Px437_DOS-V_re_JPN12': {width: 10, height: 20}\n");
+    printf("  };\n");
+    printf("  \n");
+    printf("  const component = document.currentScript.parentElement;\n");
+    printf("  const pre = component.querySelector('pre');\n");
+    printf("  const spans = component.querySelectorAll('span');\n");
+    printf("  const cols = parseInt(pre.dataset.cols);\n");
+    printf("  const rows = parseInt(pre.dataset.rows);\n");
+    printf("  \n");
+    printf("  window.switchComponentFont = function(fontName) {\n");
+    printf("    if (!FONT_DATA[fontName]) return;\n");
+    printf("    \n");
+    printf("    const fontData = FONT_DATA[fontName];\n");
+    printf("    component.dataset.font = fontName;\n");
+    printf("    component.dataset.charWidth = fontData.width;\n");
+    printf("    component.dataset.charHeight = fontData.height;\n");
+    printf("    \n");
+    printf("    pre.style.width = (cols * fontData.width) + 'px';\n");
+    printf("    pre.style.height = (rows * fontData.height) + 'px';\n");
+    printf("    \n");
+    printf("    spans.forEach(span => {\n");
+    printf("      const row = parseInt(span.dataset.row);\n");
+    printf("      const col = parseInt(span.dataset.col);\n");
+    printf("      span.style.left = (col * fontData.width) + 'px';\n");
+    printf("      span.style.top = (row * fontData.height) + 'px';\n");
+    printf("      span.style.width = fontData.width + 'px';\n");
+    printf("      span.style.height = fontData.height + 'px';\n");
+    printf("    });\n");
+    printf("  };\n");
+    printf("})();\n");
+    printf("</script>\n");
+    
+    /* Close ansi-art component */
+    printf("</ansi-art>\n");
+}
+
 /* Output the HTML document */
 static void output_html(Screen *screen) {
     int total_rows = screen->max_row + 1;
@@ -918,37 +1139,43 @@ static void print_usage(const char *prog) {
      fprintf(stderr, "Options:\n");
      fprintf(stderr, "  -t, --truecolor    Enable 24-bit true color support\n");
      fprintf(stderr, "  -u, --utf8         Enable UTF-8 encoding (default: CP437)\n");
+     fprintf(stderr, "  -p, --page         Output full HTML page (default: web component)\n");
      fprintf(stderr, "  -h, --help         Show this help message\n");
      fprintf(stderr, "\n");
-     fprintf(stderr, "Output format:\n");
-     fprintf(stderr, "  Each character is wrapped in a <span> element with:\n");
-     fprintf(stderr, "    data-id    - Unique sequential identifier (for animations)\n");
-     fprintf(stderr, "    data-row   - Row number (0-based)\n");
-     fprintf(stderr, "    data-col   - Column number (0-based)\n");
-     fprintf(stderr, "    class      - CSS classes for colors (fg-N, bg-N, bold)\n");
+     fprintf(stderr, "Output format (default: web component):\n");
+     fprintf(stderr, "  Outputs a self-contained <ansi-art> web component with:\n");
+     fprintf(stderr, "    - Absolute positioning for pixel-perfect rendering\n");
+     fprintf(stderr, "    - Scoped CSS (won't affect other page content)\n");
+     fprintf(stderr, "    - Global font switching support\n");
+     fprintf(stderr, "    - All spans have data-id, data-row, data-col attributes\n");
+     fprintf(stderr, "\n");
+     fprintf(stderr, "Output format (with -p, --page):\n");
+     fprintf(stderr, "  Outputs a full HTML document with embedded viewer.\n");
      fprintf(stderr, "\n");
      fprintf(stderr, "Example:\n");
-     fprintf(stderr, "  %s < artwork.ans > artwork.html\n", prog);
-     fprintf(stderr, "  %s --truecolor < modern.ans > modern.html\n", prog);
-     fprintf(stderr, "  %s --utf8 < utf8_art.ans > utf8_art.html\n", prog);
+     fprintf(stderr, "  %s < artwork.ans > artwork.html  (web component)\n", prog);
+     fprintf(stderr, "  %s -p < artwork.ans > page.html  (full page)\n", prog);
+     fprintf(stderr, "  %s --utf8 < utf8_art.ans > component.html\n", prog);
 }
 
 int main(int argc, char *argv[]) {
-     /* Parse command line arguments */
-     for (int i = 1; i < argc; i++) {
-         if (strcmp(argv[i], "-t") == 0 || strcmp(argv[i], "--truecolor") == 0) {
-             opt_truecolor = true;
-         } else if (strcmp(argv[i], "-u") == 0 || strcmp(argv[i], "--utf8") == 0) {
-             opt_utf8 = true;
-         } else if (strcmp(argv[i], "-h") == 0 || strcmp(argv[i], "--help") == 0) {
-             print_usage(argv[0]);
-             return 0;
-         } else {
-             fprintf(stderr, "Unknown option: %s\n", argv[i]);
-             print_usage(argv[0]);
-             return 1;
-         }
-     }
+      /* Parse command line arguments */
+      for (int i = 1; i < argc; i++) {
+          if (strcmp(argv[i], "-t") == 0 || strcmp(argv[i], "--truecolor") == 0) {
+              opt_truecolor = true;
+          } else if (strcmp(argv[i], "-u") == 0 || strcmp(argv[i], "--utf8") == 0) {
+              opt_utf8 = true;
+          } else if (strcmp(argv[i], "-p") == 0 || strcmp(argv[i], "--page") == 0) {
+              opt_component_mode = false;  /* Output full HTML page instead of component */
+          } else if (strcmp(argv[i], "-h") == 0 || strcmp(argv[i], "--help") == 0) {
+              print_usage(argv[0]);
+              return 0;
+          } else {
+              fprintf(stderr, "Unknown option: %s\n", argv[i]);
+              print_usage(argv[0]);
+              return 1;
+          }
+      }
     
     /* Read all input from stdin */
     size_t data_size;
@@ -975,13 +1202,17 @@ int main(int argc, char *argv[]) {
     /* Initialize state */
     State state = {0, 0, 7, 0, false};  /* row, col, fg, bg, bold */
     
-    /* Parse ANSI data */
-    parse_ansi(screen, &state, data, data_size);
-    
-    /* Output HTML */
-    output_html(screen);
-    
-    /* Cleanup */
+     /* Parse ANSI data */
+     parse_ansi(screen, &state, data, data_size);
+     
+     /* Output in the requested format */
+     if (opt_component_mode) {
+         output_ansi_art_component(screen);
+     } else {
+         output_html(screen);
+     }
+     
+     /* Cleanup */
     screen_free(screen);
     free(data);
     
