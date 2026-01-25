@@ -27,11 +27,11 @@
 
 /* Cell attributes */
 typedef struct {
-    unsigned char ch;           /* Character (0 = empty/space) */
-    int fg;                     /* Foreground color (-1 = default, 0-15 = standard, 256+ = RGB) */
-    int bg;                     /* Background color (-1 = default, 0-15 = standard, 256+ = RGB) */
-    bool bold;                  /* Bold attribute */
-    bool has_content;           /* Whether this cell has been written to */
+     unsigned int codepoint;         /* Character as Unicode codepoint (0 = empty/space) */
+     int fg;                     /* Foreground color (-1 = default, 0-15 = standard, 256+ = RGB) */
+     int bg;                     /* Background color (-1 = default, 0-15 = standard, 256+ = RGB) */
+     bool bold;                  /* Bold attribute */
+     bool has_content;           /* Whether this cell has been written to */
 } Cell;
 
 /* Screen buffer */
@@ -54,6 +54,7 @@ typedef struct {
 
 /* Global options */
 static bool opt_truecolor = false;
+static bool opt_utf8 = false;
 
 /* Standard ANSI colors (CGA palette) */
 static const char *ansi_colors[16] = {
@@ -128,7 +129,7 @@ static const unsigned short cp437_to_unicode[128] = {
 static Screen *screen_create(int rows, int cols);
 static void screen_free(Screen *screen);
 static void screen_ensure_size(Screen *screen, int row, int col);
-static void screen_put_char(Screen *screen, State *state, unsigned char ch);
+static void screen_put_char(Screen *screen, State *state, unsigned int codepoint);
 static void state_reset(State *state);
 static unsigned char *read_all_stdin(size_t *out_size);
 static int convert_256_to_rgb(int n);
@@ -160,14 +161,14 @@ static Screen *screen_create(int rows, int cols) {
             free(screen);
             return NULL;
         }
-        /* Initialize cells */
-        for (int c = 0; c < cols; c++) {
-            screen->cells[r][c].ch = ' ';
-            screen->cells[r][c].fg = 7;  /* Default light gray */
-            screen->cells[r][c].bg = 0;  /* Default black */
-            screen->cells[r][c].bold = false;
-            screen->cells[r][c].has_content = false;
-        }
+         /* Initialize cells */
+         for (int c = 0; c < cols; c++) {
+             screen->cells[r][c].codepoint = ' ';
+             screen->cells[r][c].fg = 7;  /* Default light gray */
+             screen->cells[r][c].bg = 0;  /* Default black */
+             screen->cells[r][c].bold = false;
+             screen->cells[r][c].has_content = false;
+         }
     }
     
     return screen;
@@ -197,13 +198,13 @@ static void screen_ensure_size(Screen *screen, int row, int col) {
         for (int r = screen->rows; r < new_rows; r++) {
             screen->cells[r] = calloc(screen->cols, sizeof(Cell));
             if (!screen->cells[r]) return;
-            for (int c = 0; c < screen->cols; c++) {
-                screen->cells[r][c].ch = ' ';
-                screen->cells[r][c].fg = 7;
-                screen->cells[r][c].bg = 0;
-                screen->cells[r][c].bold = false;
-                screen->cells[r][c].has_content = false;
-            }
+             for (int c = 0; c < screen->cols; c++) {
+                 screen->cells[r][c].codepoint = ' ';
+                 screen->cells[r][c].fg = 7;
+                 screen->cells[r][c].bg = 0;
+                 screen->cells[r][c].bold = false;
+                 screen->cells[r][c].has_content = false;
+             }
         }
         screen->rows = new_rows;
     }
@@ -218,35 +219,35 @@ static void screen_ensure_size(Screen *screen, int row, int col) {
             if (!new_row) return;
             screen->cells[r] = new_row;
             
-            for (int c = screen->cols; c < new_cols; c++) {
-                screen->cells[r][c].ch = ' ';
-                screen->cells[r][c].fg = 7;
-                screen->cells[r][c].bg = 0;
-                screen->cells[r][c].bold = false;
-                screen->cells[r][c].has_content = false;
-            }
+             for (int c = screen->cols; c < new_cols; c++) {
+                 screen->cells[r][c].codepoint = ' ';
+                 screen->cells[r][c].fg = 7;
+                 screen->cells[r][c].bg = 0;
+                 screen->cells[r][c].bold = false;
+                 screen->cells[r][c].has_content = false;
+             }
         }
         screen->cols = new_cols;
     }
 }
 
 /* Put a character at current cursor position */
-static void screen_put_char(Screen *screen, State *state, unsigned char ch) {
-    screen_ensure_size(screen, state->row, state->col);
-    
-    Cell *cell = &screen->cells[state->row][state->col];
-    cell->ch = ch;
-    cell->fg = state->fg;
-    cell->bg = state->bg;
-    cell->bold = state->bold;
-    cell->has_content = true;
-    
-    /* Track max dimensions */
-    if (state->row > screen->max_row) screen->max_row = state->row;
-    if (state->col > screen->max_col) screen->max_col = state->col;
-    
-    /* Advance cursor */
-    state->col++;
+static void screen_put_char(Screen *screen, State *state, unsigned int codepoint) {
+     screen_ensure_size(screen, state->row, state->col);
+     
+     Cell *cell = &screen->cells[state->row][state->col];
+     cell->codepoint = codepoint;
+     cell->fg = state->fg;
+     cell->bg = state->bg;
+     cell->bold = state->bold;
+     cell->has_content = true;
+     
+     /* Track max dimensions */
+     if (state->row > screen->max_row) screen->max_row = state->row;
+     if (state->col > screen->max_col) screen->max_col = state->col;
+     
+     /* Advance cursor */
+     state->col++;
 }
 
 /* Reset state to defaults */
@@ -297,11 +298,49 @@ static int convert_256_to_rgb(int n) {
         /* Grayscale: 24 shades */
         int gray = (n - 232) * 10 + 8;
         return (gray << 16) | (gray << 8) | gray;
-    }
-}
-
-/* Parse ANSI escape sequences and populate screen buffer */
-static void parse_ansi(Screen *screen, State *state, const unsigned char *data, size_t size) {
+     }
+ }
+ 
+ /* Get UTF-8 character length from first byte */
+ static int utf8_char_len(unsigned char first_byte) {
+     if ((first_byte & 0x80) == 0) return 1;      /* ASCII: 0xxxxxxx */
+     if ((first_byte & 0xE0) == 0xC0) return 2;   /* 110xxxxx */
+     if ((first_byte & 0xF0) == 0xE0) return 3;   /* 1110xxxx */
+     if ((first_byte & 0xF8) == 0xF0) return 4;   /* 11110xxx */
+     return -1;  /* Invalid UTF-8 start byte */
+ }
+ 
+ /* Check if byte is a valid UTF-8 continuation byte (10xxxxxx) */
+ static bool is_utf8_continuation(unsigned char byte) {
+     return (byte & 0xC0) == 0x80;
+ }
+ 
+ /* Decode UTF-8 character to Unicode codepoint. Returns -1 if invalid. */
+ static int utf8_decode(const unsigned char *bytes, int len) {
+     if (len <= 0) return -1;
+     
+     /* Validate continuation bytes */
+     for (int i = 1; i < len; i++) {
+         if (!is_utf8_continuation(bytes[i])) {
+             return -1;  /* Invalid UTF-8 sequence */
+         }
+     }
+     
+     if (len == 1) {
+         return (int)bytes[0];
+     } else if (len == 2) {
+         return ((bytes[0] & 0x1F) << 6) | (bytes[1] & 0x3F);
+     } else if (len == 3) {
+         return ((bytes[0] & 0x0F) << 12) | ((bytes[1] & 0x3F) << 6) | (bytes[2] & 0x3F);
+     } else if (len == 4) {
+         return ((bytes[0] & 0x07) << 18) | ((bytes[1] & 0x3F) << 12) | 
+                ((bytes[2] & 0x3F) << 6) | (bytes[3] & 0x3F);
+     }
+     return -1;
+ }
+ 
+ /* Parse ANSI escape sequences and populate screen buffer */
+ static void parse_ansi(Screen *screen, State *state, const unsigned char *data, size_t size) {
     size_t i = 0;
     
     while (i < size) {
@@ -512,40 +551,62 @@ static void parse_ansi(Screen *screen, State *state, const unsigned char *data, 
         } else if (ch == '\t') {
             /* Tab - move to next 8-column boundary */
             state->col = (state->col + 8) & ~7;
-            i++;
-        } else if (ch >= 32 || ch >= 128) {
-            /* Printable character or extended ASCII */
-            screen_put_char(screen, state, ch);
-            i++;
-        } else {
-            /* Other control characters - skip */
-            i++;
-        }
+             i++;
+         } else if (ch >= 32 || ch >= 128) {
+             /* Printable character or extended ASCII / UTF-8 */
+             if (opt_utf8 && (ch & 0x80) != 0) {
+                 /* Potential UTF-8 sequence */
+                 int utf8_len = utf8_char_len(ch);
+                 if (utf8_len > 0 && i + utf8_len <= size) {
+                     int codepoint = utf8_decode(&data[i], utf8_len);
+                     if (codepoint >= 0) {
+                         screen_put_char(screen, state, (unsigned int)codepoint);
+                         i += utf8_len;
+                     } else {
+                         /* Invalid UTF-8 - skip this byte */
+                         i++;
+                     }
+                 } else {
+                     /* Invalid UTF-8 or truncated - skip */
+                     i++;
+                 }
+             } else {
+                 /* ASCII or CP437 - single byte */
+                 screen_put_char(screen, state, (unsigned int)ch);
+                 i++;
+             }
+         } else {
+             /* Other control characters - skip */
+             i++;
+         }
     }
 }
 
 /* Output HTML entity for special characters */
-static void output_char_escaped(unsigned char ch) {
-    switch (ch) {
-        case '<':  printf("&lt;"); break;
-        case '>':  printf("&gt;"); break;
-        case '&':  printf("&amp;"); break;
-        case '"':  printf("&quot;"); break;
-        case ' ':  printf(" "); break;  /* Regular space */
-        case 0:    printf(" "); break;  /* Null -> space */
-        default:
-            if (ch >= 32 && ch < 127) {
-                putchar(ch);
-            } else if (ch >= 128) {
-                /* CP437 extended ASCII - convert to Unicode */
-                unsigned short unicode = cp437_to_unicode[ch - 128];
-                printf("&#x%04X;", unicode);
-            } else {
-                /* Control characters - output as space */
-                putchar(' ');
-            }
-            break;
-    }
+static void output_char_escaped(unsigned int codepoint) {
+     switch (codepoint) {
+         case '<':  printf("&lt;"); break;
+         case '>':  printf("&gt;"); break;
+         case '&':  printf("&amp;"); break;
+         case '"':  printf("&quot;"); break;
+         case ' ':  printf(" "); break;  /* Regular space */
+         case 0:    printf(" "); break;  /* Null -> space */
+         default:
+             if (codepoint >= 32 && codepoint < 127) {
+                 putchar(codepoint);
+             } else if (codepoint >= 128 && codepoint < 256) {
+                 /* CP437 extended ASCII - convert to Unicode */
+                 unsigned short unicode = cp437_to_unicode[codepoint - 128];
+                 printf("&#x%04X;", unicode);
+             } else if (codepoint >= 256) {
+                 /* High Unicode - output as hex entity */
+                 printf("&#x%X;", codepoint);
+             } else {
+                 /* Control characters - output as space */
+                 putchar(' ');
+             }
+             break;
+     }
 }
 
 /* Generate font-specific CSS with proper line heights for 2:1 DOS aspect ratio */
@@ -683,20 +744,25 @@ static void output_html(Screen *screen) {
       printf("  word-wrap: normal;\n");
       printf("  display: block;\n");
       printf("}\n");
-      printf("pre.ansi-art span {\n");
-      printf("  font-family: inherit;\n");
-      printf("  font-size: inherit;\n");
-      printf("  line-height: inherit;\n");
-      printf("  letter-spacing: inherit;\n");
-      printf("  word-spacing: inherit;\n");
-      printf("  text-rendering: geometricPrecision;\n");
-      printf("  font-variant-ligatures: none;\n");
-      printf("  font-kerning: none;\n");
-      printf("  font-feature-settings: 'kern' 0, 'liga' 0;\n");
-      printf("  -webkit-font-smoothing: none;\n");
-      printf("  text-decoration: none;\n");
-      printf("  display: inline;\n");
-     printf("}\n");
+       printf("pre.ansi-art span {\n");
+       printf("  font-family: inherit;\n");
+       printf("  font-size: inherit;\n");
+       printf("  line-height: inherit;\n");
+       printf("  letter-spacing: inherit;\n");
+       printf("  word-spacing: inherit;\n");
+       printf("  text-rendering: geometricPrecision;\n");
+       printf("  font-variant-ligatures: none;\n");
+       printf("  font-kerning: none;\n");
+       printf("  font-feature-settings: 'kern' 0, 'liga' 0;\n");
+       printf("  -webkit-font-smoothing: none;\n");
+       printf("  text-decoration: none;\n");
+       printf("  display: inline-block;\n");
+       printf("  width: 1ch;\n");
+       printf("  margin: 0;\n");
+       printf("  padding: 0;\n");
+       printf("  border: 0;\n");
+       printf("  overflow: visible;\n");
+      printf("}\n");
     
     /* Color classes */
     for (int i = 0; i < 16; i++) {
@@ -731,7 +797,7 @@ static void output_html(Screen *screen) {
           /* Find RIGHTMOST non-space content (regardless of styling) */
           for (int col = total_cols - 1; col >= 0; col--) {
               Cell *cell = &screen->cells[row][col];
-              if (cell->ch != 0 && cell->ch != ' ') {
+              if (cell->codepoint != 0 && cell->codepoint != ' ') {
                   row_content_end = col + 1;
                   break;
               }
@@ -806,9 +872,9 @@ static void output_html(Screen *screen) {
                  printf(" style=\"%s\"", style_str);
              }
              
-             printf(">");
-             output_char_escaped(cell->ch);
-             printf("</span>");
+              printf(">");
+              output_char_escaped(cell->codepoint);
+              printf("</span>");
          }
          /* End of row - add newline in output */
           printf("\n");
@@ -847,38 +913,42 @@ static void output_html(Screen *screen) {
 static void print_usage(const char *prog) {
     fprintf(stderr, "Usage: %s [options] < input.ans > output.html\n", prog);
     fprintf(stderr, "\n");
-    fprintf(stderr, "Convert ANSI art files to HTML with CSS styling.\n");
-    fprintf(stderr, "\n");
-    fprintf(stderr, "Options:\n");
-    fprintf(stderr, "  -t, --truecolor    Enable 24-bit true color support\n");
-    fprintf(stderr, "  -h, --help         Show this help message\n");
-    fprintf(stderr, "\n");
-    fprintf(stderr, "Output format:\n");
-    fprintf(stderr, "  Each character is wrapped in a <span> element with:\n");
-    fprintf(stderr, "    data-id    - Unique sequential identifier (for animations)\n");
-    fprintf(stderr, "    data-row   - Row number (0-based)\n");
-    fprintf(stderr, "    data-col   - Column number (0-based)\n");
-    fprintf(stderr, "    class      - CSS classes for colors (fg-N, bg-N, bold)\n");
-    fprintf(stderr, "\n");
-    fprintf(stderr, "Example:\n");
-    fprintf(stderr, "  %s < artwork.ans > artwork.html\n", prog);
-    fprintf(stderr, "  %s --truecolor < modern.ans > modern.html\n", prog);
+     fprintf(stderr, "Convert ANSI art files to HTML with CSS styling.\n");
+     fprintf(stderr, "\n");
+     fprintf(stderr, "Options:\n");
+     fprintf(stderr, "  -t, --truecolor    Enable 24-bit true color support\n");
+     fprintf(stderr, "  -u, --utf8         Enable UTF-8 encoding (default: CP437)\n");
+     fprintf(stderr, "  -h, --help         Show this help message\n");
+     fprintf(stderr, "\n");
+     fprintf(stderr, "Output format:\n");
+     fprintf(stderr, "  Each character is wrapped in a <span> element with:\n");
+     fprintf(stderr, "    data-id    - Unique sequential identifier (for animations)\n");
+     fprintf(stderr, "    data-row   - Row number (0-based)\n");
+     fprintf(stderr, "    data-col   - Column number (0-based)\n");
+     fprintf(stderr, "    class      - CSS classes for colors (fg-N, bg-N, bold)\n");
+     fprintf(stderr, "\n");
+     fprintf(stderr, "Example:\n");
+     fprintf(stderr, "  %s < artwork.ans > artwork.html\n", prog);
+     fprintf(stderr, "  %s --truecolor < modern.ans > modern.html\n", prog);
+     fprintf(stderr, "  %s --utf8 < utf8_art.ans > utf8_art.html\n", prog);
 }
 
 int main(int argc, char *argv[]) {
-    /* Parse command line arguments */
-    for (int i = 1; i < argc; i++) {
-        if (strcmp(argv[i], "-t") == 0 || strcmp(argv[i], "--truecolor") == 0) {
-            opt_truecolor = true;
-        } else if (strcmp(argv[i], "-h") == 0 || strcmp(argv[i], "--help") == 0) {
-            print_usage(argv[0]);
-            return 0;
-        } else {
-            fprintf(stderr, "Unknown option: %s\n", argv[i]);
-            print_usage(argv[0]);
-            return 1;
-        }
-    }
+     /* Parse command line arguments */
+     for (int i = 1; i < argc; i++) {
+         if (strcmp(argv[i], "-t") == 0 || strcmp(argv[i], "--truecolor") == 0) {
+             opt_truecolor = true;
+         } else if (strcmp(argv[i], "-u") == 0 || strcmp(argv[i], "--utf8") == 0) {
+             opt_utf8 = true;
+         } else if (strcmp(argv[i], "-h") == 0 || strcmp(argv[i], "--help") == 0) {
+             print_usage(argv[0]);
+             return 0;
+         } else {
+             fprintf(stderr, "Unknown option: %s\n", argv[i]);
+             print_usage(argv[0]);
+             return 1;
+         }
+     }
     
     /* Read all input from stdin */
     size_t data_size;
