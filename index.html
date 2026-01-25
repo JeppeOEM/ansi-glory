@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CODEFENIX GINGER - ANSI Art Viewer</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      padding: 30px 20px;
+      min-height: 100vh;
+      color: #fff;
+    }
+    
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+    
+    header {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+    
+    h1 {
+      font-size: 3em;
+      margin-bottom: 10px;
+      text-shadow: 0 4px 8px rgba(0,0,0,0.5);
+      background: linear-gradient(135deg, #ff6b6b, #ee5a6f, #ff6b6b);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    
+    .subtitle {
+      font-size: 1.2em;
+      color: #aaa;
+      margin-bottom: 30px;
+    }
+    
+    .controls {
+      background: rgba(255, 255, 255, 0.1);
+      border: 2px solid rgba(255, 107, 107, 0.3);
+      border-radius: 12px;
+      padding: 25px;
+      margin-bottom: 30px;
+      backdrop-filter: blur(10px);
+      display: flex;
+      gap: 20px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    
+    .controls label {
+      font-weight: 600;
+      font-size: 1.1em;
+      color: #ff6b6b;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+    
+    .controls select {
+      padding: 12px 16px;
+      border: 2px solid #ff6b6b;
+      border-radius: 8px;
+      font-size: 1em;
+      background: rgba(0, 0, 0, 0.5);
+      color: #fff;
+      cursor: pointer;
+      min-width: 300px;
+      transition: all 0.3s ease;
+      font-weight: 500;
+    }
+    
+    .controls select:hover {
+      border-color: #ff8787;
+      box-shadow: 0 0 20px rgba(255, 107, 107, 0.4);
+    }
+    
+    .controls select:focus {
+      outline: none;
+      border-color: #ff8787;
+      box-shadow: 0 0 30px rgba(255, 107, 107, 0.6);
+      background: rgba(0, 0, 0, 0.7);
+    }
+    
+    .controls select option {
+      background: #1a1a2e;
+      color: #fff;
+      padding: 8px;
+    }
+    
+    .viewer {
+      background: rgba(0, 0, 0, 0.6);
+      border: 2px solid rgba(255, 107, 107, 0.2);
+      border-radius: 12px;
+      padding: 30px;
+      overflow: auto;
+      backdrop-filter: blur(10px);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+      max-height: 85vh;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+    }
+    
+    ansi-art {
+      display: block;
+      position: relative;
+    }
+    
+    ansi-art pre {
+      position: relative;
+      margin: 0;
+      padding: 0;
+      white-space: pre;
+      font-family: 'Px437_IBM_VGA_8x16', 'Courier New', monospace;
+      font-size: 16px;
+      line-height: 1.0;
+      letter-spacing: 0;
+      word-spacing: 0;
+      text-rendering: geometricPrecision;
+      -webkit-font-smoothing: none;
+      font-variant-ligatures: none;
+      font-kerning: none;
+      font-feature-settings: 'kern' 0, 'liga' 0;
+    }
+    
+    ansi-art span {
+      position: absolute;
+      margin: 0;
+      padding: 0;
+      border: 0;
+      overflow: hidden;
+      font-family: inherit;
+      font-size: inherit;
+      line-height: inherit;
+      letter-spacing: inherit;
+      word-spacing: inherit;
+      text-rendering: geometricPrecision;
+      -webkit-font-smoothing: none;
+      font-variant-ligatures: none;
+      font-kerning: none;
+      font-feature-settings: 'kern' 0, 'liga' 0;
+    }
+    
+    ansi-art .fg-0 { color: #000000; }
+    ansi-art .fg-1 { color: #aa0000; }
+    ansi-art .fg-2 { color: #00aa00; }
+    ansi-art .fg-3 { color: #aa5500; }
+    ansi-art .fg-4 { color: #0000aa; }
+    ansi-art .fg-5 { color: #aa00aa; }
+    ansi-art .fg-6 { color: #00aaaa; }
+    ansi-art .fg-7 { color: #aaaaaa; }
+    ansi-art .fg-8 { color: #555555; }
+    ansi-art .fg-9 { color: #ff5555; }
+    ansi-art .fg-10 { color: #55ff55; }
+    ansi-art .fg-11 { color: #ffff55; }
+    ansi-art .fg-12 { color: #5555ff; }
+    ansi-art .fg-13 { color: #ff55ff; }
+    ansi-art .fg-14 { color: #55ffff; }
+    ansi-art .fg-15 { color: #ffffff; }
+    ansi-art .bg-0 { background-color: #000000; }
+    ansi-art .bg-1 { background-color: #aa0000; }
+    ansi-art .bg-2 { background-color: #00aa00; }
+    ansi-art .bg-3 { background-color: #aa5500; }
+    ansi-art .bg-4 { background-color: #0000aa; }
+    ansi-art .bg-5 { background-color: #aa00aa; }
+    ansi-art .bg-6 { background-color: #00aaaa; }
+    ansi-art .bg-7 { background-color: #aaaaaa; }
+    ansi-art .bg-8 { background-color: #555555; }
+    ansi-art .bg-9 { background-color: #ff5555; }
+    ansi-art .bg-10 { background-color: #55ff55; }
+    ansi-art .bg-11 { background-color: #ffff55; }
+    ansi-art .bg-12 { background-color: #5555ff; }
+    ansi-art .bg-13 { background-color: #ff55ff; }
+    ansi-art .bg-14 { background-color: #55ffff; }
+    ansi-art .bg-15 { background-color: #ffffff; }
+    ansi-art .bold { font-weight: bold; }
+    
+    footer {
+      text-align: center;
+      margin-top: 30px;
+      color: #666;
+      font-size: 0.9em;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>CODEFENIX GINGER</h1>
+      <p class="subtitle">Classic ANSI Art Viewer</p>
+    </header>
+    
+    <div class="controls">
+      <label for="font-select">Font:</label>
+      <select id="font-select" onchange="switchFont(this.value)">
+        <option value="Px437_IBM_VGA_8x16" selected>IBM VGA 8x16 (Default)</option>
+        <option value="Px437_IBM_VGA_9x16">IBM VGA 9x16</option>
+        <option value="Px437_IBM_EGA_8x14">IBM EGA 8x14</option>
+        <option value="Px437_IBM_BIOS">IBM BIOS</option>
+        <option value="Px437_IBM_CGA">IBM CGA</option>
+        <option value="Px437_DOS-V_re_JPN12">DOS-V Japanese</option>
+      </select>
+    </div>
+    
+    <div class="viewer" id="viewer">
+      <div id="loading" style="color: #ff6b6b;">Loading component...</div>
+    </div>
+    
+    <footer>
+      <p>CODEFENIX GINGER ANSI Art Viewer | Powered by ANSI2HTML Web Components</p>
+    </footer>
+  </div>
+
+  <script>
+    // Load the component
+    async function loadComponent() {
+      try {
+        const response = await fetch('codefenix-ginger.html');
+        const html = await response.text();
+        
+        // Extract just the ansi-art element
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(html, 'text/html');
+        const component = doc.querySelector('ansi-art');
+        
+        if (component) {
+          const viewer = document.getElementById('viewer');
+          viewer.innerHTML = '';
+          viewer.appendChild(component);
+          
+          // Initialize font switching on the loaded component
+          const componentRef = viewer.querySelector('ansi-art');
+          console.log('Component loaded successfully');
+        } else {
+          throw new Error('Could not find ansi-art element');
+        }
+      } catch (error) {
+        console.error('Error loading component:', error);
+        document.getElementById('viewer').innerHTML = 
+          '<div style="color: #ff5555;">Error loading component: ' + error.message + '</div>';
+      }
+    }
+
+    // Font switching function
+    function switchFont(fontName) {
+      const component = document.querySelector('ansi-art');
+      if (component && typeof component.switchComponentFont === 'function') {
+        component.switchComponentFont(fontName);
+      }
+    }
+
+    // Load on page load
+    document.addEventListener('DOMContentLoaded', loadComponent);
+  </script>
+</body>
+</html>
