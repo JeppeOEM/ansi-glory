@@ -606,20 +606,24 @@ static void output_html(Screen *screen) {
      printf("<style>\n");
      
      /* Global CSS reset - remove all browser defaults */
-     printf("/* Global reset - remove all browser defaults */\n");
-     printf("* {\n");
-     printf("  margin: 0;\n");
-     printf("  padding: 0;\n");
-     printf("  border: 0;\n");
-     printf("  box-sizing: border-box;\n");
-     printf("  text-decoration: none;\n");
-     printf("  text-transform: none;\n");
-     printf("  font-style: normal;\n");
-     printf("  font-weight: normal;\n");
-     printf("  font-variant: normal;\n");
-     printf("  font-variant-ligatures: none;\n");
-     printf("  line-height: 1;\n");
-     printf("}\n");
+      printf("/* Global reset - remove all browser defaults */\n");
+      printf("* {\n");
+      printf("  margin: 0;\n");
+      printf("  padding: 0;\n");
+      printf("  border: 0;\n");
+      printf("  box-sizing: border-box;\n");
+      printf("  text-decoration: none;\n");
+      printf("  text-transform: none;\n");
+      printf("  font-style: normal;\n");
+      printf("  font-weight: normal;\n");
+      printf("  font-variant: normal;\n");
+      printf("  font-variant-ligatures: none;\n");
+      printf("  font-kerning: none;\n");
+      printf("  line-height: 1;\n");
+      printf("  text-rendering: geometricPrecision;\n");
+      printf("  -webkit-font-smoothing: none;\n");
+      printf("  -moz-osx-font-smoothing: auto;\n");
+      printf("}\n");
      
       /* Font declarations */
       generate_font_list();
@@ -659,28 +663,39 @@ static void output_html(Screen *screen) {
      printf("  padding: 0;\n");
      printf("  overflow: auto;\n");
      printf("}\n");
-     printf("pre.ansi-art {\n");
-     printf("  font-family: '%s', 'Courier New', monospace;\n", font_list[0]);
-     printf("  font-size: 16px;\n");
-     printf("  line-height: 1.0;\n");
-     printf("  margin: 0;\n");
-     printf("  padding: 0;\n");
-     printf("  letter-spacing: 0;\n");
-     printf("  word-spacing: 0;\n");
-     printf("  text-rendering: geometricPrecision;\n");
-     printf("  font-variant-ligatures: none;\n");
-     printf("  white-space: pre;\n");
-     printf("  word-wrap: normal;\n");
-     printf("  display: block;\n");
-     printf("}\n");
-     printf("pre.ansi-art span {\n");
-     printf("  font-family: inherit;\n");
-     printf("  font-size: inherit;\n");
-     printf("  line-height: inherit;\n");
-     printf("  text-rendering: geometricPrecision;\n");
-     printf("  font-variant-ligatures: none;\n");
-     printf("  text-decoration: none;\n");
-     printf("  display: inline;\n");
+      printf("pre.ansi-art {\n");
+      printf("  font-family: '%s', 'Courier New', monospace;\n", font_list[0]);
+      printf("  font-size: 16px;\n");
+      printf("  line-height: 1.0;\n");
+      printf("  margin: 0;\n");
+      printf("  padding: 0;\n");
+      printf("  letter-spacing: 0;\n");
+      printf("  word-spacing: 0;\n");
+      printf("  text-rendering: geometricPrecision;\n");
+      printf("  text-size-adjust: 100%%;\n");
+      printf("  -webkit-text-size-adjust: 100%%;\n");
+      printf("  font-variant-ligatures: none;\n");
+      printf("  font-kerning: none;\n");
+      printf("  font-feature-settings: 'kern' 0, 'liga' 0;\n");
+      printf("  -webkit-font-smoothing: none;\n");
+      printf("  -moz-osx-font-smoothing: auto;\n");
+      printf("  white-space: pre;\n");
+      printf("  word-wrap: normal;\n");
+      printf("  display: block;\n");
+      printf("}\n");
+      printf("pre.ansi-art span {\n");
+      printf("  font-family: inherit;\n");
+      printf("  font-size: inherit;\n");
+      printf("  line-height: inherit;\n");
+      printf("  letter-spacing: inherit;\n");
+      printf("  word-spacing: inherit;\n");
+      printf("  text-rendering: geometricPrecision;\n");
+      printf("  font-variant-ligatures: none;\n");
+      printf("  font-kerning: none;\n");
+      printf("  font-feature-settings: 'kern' 0, 'liga' 0;\n");
+      printf("  -webkit-font-smoothing: none;\n");
+      printf("  text-decoration: none;\n");
+      printf("  display: inline;\n");
      printf("}\n");
     
     /* Color classes */
@@ -707,33 +722,36 @@ static void output_html(Screen *screen) {
      printf("<div class=\"content\">\n");
      printf("<pre class=\"ansi-art\" id=\"ansi-art\">");
      
-     /* Output characters with trailing whitespace trimming */
-     int char_id = 0;
-     for (int row = 0; row < total_rows; row++) {
-         /* Calculate actual content end for this row */
-         /* Include character content and any cells with styling */
-         int row_content_end = 0;
-         
-         /* Find last cell with non-space content */
-         for (int col = total_cols - 1; col >= 0; col--) {
-             Cell *cell = &screen->cells[row][col];
-             if (cell->ch != 0 && cell->ch != ' ') {
-                 row_content_end = col + 1;
-                 break;
-             }
-         }
-         
-         /* Also include any trailing spaces with color/style */
-         for (int col = row_content_end; col < total_cols; col++) {
-             Cell *cell = &screen->cells[row][col];
-             if ((cell->fg >= 0 && cell->fg < 16 && cell->fg != 7) ||
-                 (cell->bg >= 0 && cell->bg != 0) ||
-                 cell->bold) {
-                 row_content_end = col + 1;
-             }
-         }
-         
-         /* Output up to content end, or minimum 1 character per row */
+      /* Output characters with trailing whitespace trimming */
+      int char_id = 0;
+      for (int row = 0; row < total_rows; row++) {
+          /* Calculate actual content end for this row */
+          int row_content_end = 0;
+          
+          /* Find RIGHTMOST non-space content (regardless of styling) */
+          for (int col = total_cols - 1; col >= 0; col--) {
+              Cell *cell = &screen->cells[row][col];
+              if (cell->ch != 0 && cell->ch != ' ') {
+                  row_content_end = col + 1;
+                  break;
+              }
+          }
+          
+          /* ALSO check for any cells with explicit styling (non-default colors) */
+          for (int col = 0; col < total_cols; col++) {
+              Cell *cell = &screen->cells[row][col];
+              /* Include if it has non-default styling */
+              if ((cell->fg >= 0 && cell->fg < 16 && cell->fg != 7) ||
+                  (cell->bg >= 0 && cell->bg != 0) ||
+                  cell->bold) {
+                  /* Update content end if this styled cell is past current end */
+                  if (col + 1 > row_content_end) {
+                      row_content_end = col + 1;
+                  }
+              }
+          }
+          
+          /* Output up to content end */
          int output_cols = (row_content_end > 0) ? row_content_end : 1;
          
          for (int col = 0; col < output_cols; col++) {
