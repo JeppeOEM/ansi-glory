@@ -270,28 +270,6 @@ static bool is_utf8_continuation(unsigned char byte) {
     return (byte & 0xC0) == 0x80;
 }
 
-/* Check if a codepoint is a valid printable character we should display */
-static bool is_printable_char(unsigned int codepoint) {
-    /* Allow basic ASCII, extended Latin, and common Unicode blocks */
-    if (codepoint < 0x80) return true;  /* ASCII */
-    if (codepoint >= 0xFDD0 && codepoint <= 0xFDEF) return false;  /* Noncharacters */
-    if ((codepoint & 0xFFFE) == 0xFFFE) return false;  /* Noncharacters */
-    if (codepoint >= 0x1F600 && codepoint <= 0x1F64F) return true;  /* Emoji */
-    if (codepoint >= 0x2400 && codepoint <= 0x243F) return true;  /* Control Pictures */
-    if (codepoint >= 0x2440 && codepoint <= 0x245F) return true;  /* OCR */
-    if (codepoint >= 0x2500 && codepoint <= 0x257F) return true;  /* Box Drawing */
-    if (codepoint >= 0x2580 && codepoint <= 0x259F) return true;  /* Block Elements */
-    if (codepoint >= 0x0600 && codepoint <= 0x06FF) return false;  /* Arabic (common in corrupted ANSI) */
-    if (codepoint >= 0x0100 && codepoint <= 0x017F) return true;  /* Latin Extended-A */
-    if (codepoint >= 0x0180 && codepoint <= 0x024F) return true;  /* Latin Extended-B */
-    /* Reject many other non-Latin scripts that shouldn't appear in ANSI art */
-    if (codepoint >= 0x0400 && codepoint <= 0x04FF) return false;  /* Cyrillic */
-    if (codepoint >= 0x0500 && codepoint <= 0x052F) return false;  /* Cyrillic Supplement */
-    if (codepoint >= 0x0900 && codepoint <= 0x097F) return false;  /* Devanagari */
-    /* Allow most other printable ranges */
-    if (codepoint >= 0xA0) return true;  /* Non-breaking space and above */
-    return false;
-}
 
 /* Decode UTF-8 character to Unicode codepoint. Returns -1 if invalid. */
 static int utf8_decode(const unsigned char *bytes, int len) {
@@ -585,19 +563,11 @@ static void parse_ansi(Screen *screen, State *state, const unsigned char *data, 
                 /* Valid UTF-8 sequence within bounds */
                 int codepoint = utf8_decode(&data[i], utf8_len);
                 if (codepoint >= 0) {
-                    /* Check if it's a printable character we want to display */
-                    if (is_printable_char((unsigned int)codepoint)) {
-                        /* Valid and acceptable codepoint */
-                        screen_put_char(screen, state, (unsigned int)codepoint);
-                        i += utf8_len;
-                    } else {
-                        /* Valid UTF-8 but not a character we display - output replacement */
-                        screen_put_char(screen, state, 0xFFFD);
-                        i += utf8_len;
-                    }
+                    /* Valid UTF-8 - display it as-is */
+                    screen_put_char(screen, state, (unsigned int)codepoint);
+                    i += utf8_len;
                 } else {
-                    /* Invalid UTF-8 sequence - output as replacement character */
-                    screen_put_char(screen, state, 0xFFFD);
+                    /* Invalid UTF-8 sequence - skip this byte */
                     i++;
                 }
             } else {
