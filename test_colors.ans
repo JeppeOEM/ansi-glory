@@ -1,0 +1,14 @@
+Color Test - Standard 16 Colors
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Foreground Colors:
+0=Black   1=Red     2=Green   3=Yellow
+4=Blue    5=Magenta 6=Cyan    7=White
+8=Bright Black (Dark Gray)
+9=Bright Red          A=Bright Green
+B=Bright Yellow       C=Bright Blue
+D=Bright Magenta      E=Bright Cyan
+F=Bright White
+
+Background Colors:
+[0m Bg0[1;37m [7m[0m [7m[0m [7m[0m [7m[0m [7m[0m [7m[0m [7m[0m

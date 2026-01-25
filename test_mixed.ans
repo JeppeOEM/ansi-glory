@@ -1,0 +1,30 @@
+Mixed Content Test
+════════════════════════════════════════════════════════════════════════════════
+
+┌──────────────────────────────────────────────────────────┐
+│  This demonstrates mixed box-drawing and text content    │
+├──────────────────────────────────────────────────────────┤
+│  ✓ Features:                                              │
+│    • Box drawing characters                              │
+│    • Unicode symbols                                     │
+│    • Multiple text elements                              │
+│    • Proper alignment testing                            │
+└──────────────────────────────────────────────────────────┘
+
+Simple line test:
+─────────────────────────────────────────────────────────────
+
+Vertical alignment test:
+│
+│
+│
+└── End of vertical test
+
+Layout Test:
+╔═════╦═════╦═════╗
+║  A  ║  B  ║  C  ║
+╠═════╬═════╬═════╣
+║  D  ║  E  ║  F  ║
+╠═════╬═════╬═════╣
+║  G  ║  H  ║  I  ║
+╚═════╩═════╩═════╝

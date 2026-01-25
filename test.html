@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ANSI2HTML Web Component Test Suite</title>
+  <style>
+    /* Test page styling - completely separate from components */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      background: #f0f0f0;
+      font-family: Arial, sans-serif;
+      padding: 20px;
+      color: #333;
+    }
+    
+    h1 {
+      margin-bottom: 30px;
+      color: #222;
+    }
+    
+    .controls {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 20px;
+      border-radius: 8px;
+      margin-bottom: 30px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+    
+    .controls h2 {
+      font-size: 16px;
+      margin-bottom: 15px;
+      font-weight: 600;
+    }
+    
+    .font-selector {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    
+    .font-selector label {
+      font-weight: bold;
+    }
+    
+    .font-selector select {
+      padding: 8px 12px;
+      font-size: 14px;
+      border: none;
+      border-radius: 4px;
+      background: white;
+      color: #333;
+      cursor: pointer;
+      min-width: 250px;
+    }
+    
+    .font-selector select:hover {
+      background: #f9f9f9;
+    }
+    
+    .font-selector select:focus {
+      outline: 2px solid #ffeb3b;
+      outline-offset: 2px;
+    }
+    
+    .section {
+      background: white;
+      border: 2px solid #ddd;
+      margin: 20px 0;
+      padding: 20px;
+      border-radius: 6px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    }
+    
+    .section h2 {
+      font-size: 18px;
+      margin-bottom: 8px;
+      color: #222;
+      border-bottom: 2px solid #667eea;
+      padding-bottom: 8px;
+    }
+    
+    .section p {
+      font-size: 13px;
+      color: #666;
+      margin-bottom: 15px;
+      font-style: italic;
+    }
+    
+    .component-container {
+      background: #f5f5f5;
+      padding: 15px;
+      border: 1px solid #e0e0e0;
+      border-radius: 4px;
+      overflow: auto;
+      max-height: 600px;
+    }
+    
+    .test-notes {
+      background: #e8f5e9;
+      border-left: 4px solid #4caf50;
+      padding: 10px;
+      margin: 10px 0;
+      font-size: 12px;
+      color: #2e7d32;
+    }
+    
+    .test-notes strong {
+      color: #1b5e20;
+    }
+    
+    footer {
+      margin-top: 40px;
+      padding-top: 20px;
+      border-top: 2px solid #ddd;
+      text-align: center;
+      font-size: 12px;
+      color: #999;
+    }
+  </style>
+</head>
+<body>
+  <h1>🎨 ANSI2HTML Web Component Test Suite</h1>
+  
+  <div class="controls">
+    <h2>Global Font Switcher</h2>
+    <div class="font-selector">
+      <label for="global-font">Select Font:</label>
+      <select id="global-font">
+        <option value="Px437_IBM_VGA_8x16" selected>Px437_IBM_VGA_8x16 (8x16) - Standard DOS</option>
+        <option value="Px437_IBM_VGA_9x16">Px437_IBM_VGA_9x16 (9x16) - VGA variant</option>
+        <option value="Px437_IBM_EGA_8x14">Px437_IBM_EGA_8x14 (8x14) - EGA variant</option>
+        <option value="Px437_IBM_BIOS">Px437_IBM_BIOS (8x16) - BIOS font</option>
+        <option value="Px437_IBM_CGA">Px437_IBM_CGA (8x16) - CGA variant</option>
+        <option value="Px437_DOS-V_re_JPN12">Px437_DOS-V_re_JPN12 (10x20) - Japanese</option>
+      </select>
+    </div>
+  </div>
+  
+  <div class="section">
+    <h2>Test 1: Box Drawing - Pixel-Perfect Alignment</h2>
+    <p>Verify: No dark gaps between box characters at 100% zoom. Characters should form continuous lines.</p>
+    <div class="test-notes">
+      <strong>Important:</strong> At 100% zoom, examine closely for any gaps or misalignment between box-drawing characters. 
+      The absolute positioning should place each character at exact pixel boundaries.
+    </div>
+    <div class="component-container" id="test1-container">
+      <!-- Component will be inserted here -->
+    </div>
+  </div>
+  
+  <div class="section">
+    <h2>Test 2: Colors - All 16 ANSI Colors</h2>
+    <p>Verify: All 16 colors render correctly. Foreground and background styling applied properly.</p>
+    <div class="test-notes">
+      <strong>Check:</strong> Verify that color classes (fg-N, bg-N) are properly scoped and don't affect other content on the page.
+    </div>
+    <div class="component-container" id="test2-container">
+      <!-- Component will be inserted here -->
+    </div>
+  </div>
+  
+  <div class="section">
+    <h2>Test 3: Mixed Content - Colors + Box Drawing</h2>
+    <p>Verify: Colors and box-drawing work together. Mixed content renders without interference.</p>
+    <div class="test-notes">
+      <strong>Check:</strong> Unicode symbols (✓, ✗, ★) should render correctly alongside standard ASCII.
+    </div>
+    <div class="component-container" id="test3-container">
+      <!-- Component will be inserted here -->
+    </div>
+  </div>
+  
+  <div class="section">
+    <h2>Test 4: Small Artwork - 5x7 Dimensions</h2>
+    <p>Verify: Very small artworks render correctly. Container dimensions match content size.</p>
+    <div class="test-notes">
+      <strong>Dimensions:</strong> Expected size: 40px × 112px (5 chars × 7 lines, 8x16 font)
+    </div>
+    <div class="component-container" id="test4-container">
+      <!-- Component will be inserted here -->
+    </div>
+  </div>
+  
+  <div class="section">
+    <h2>Test 5: Wide Artwork - 80+ Character Width</h2>
+    <p>Verify: Wide artworks handle larger dimensions. Font switching recalculates all positions correctly.</p>
+    <div class="test-notes">
+      <strong>Challenge:</strong> Switch fonts multiple times and verify all characters reposition correctly, no visual corruption.
+    </div>
+    <div class="component-container" id="test5-container">
+      <!-- Component will be inserted here -->
+    </div>
+  </div>
+  
+  <footer>
+    <p>ANSI2HTML Web Component Test Suite | All components use absolute positioning for pixel-perfect rendering</p>
+    <p>Each component is self-contained with scoped CSS and independent font switching capabilities</p>
+  </footer>
+  
+  <script>
+    // Font metadata for all supported fonts
+    const FONT_MAP = {
+      'Px437_IBM_VGA_8x16': {width: 8, height: 16},
+      'Px437_IBM_VGA_9x16': {width: 9, height: 16},
+      'Px437_IBM_EGA_8x14': {width: 8, height: 14},
+      'Px437_IBM_BIOS': {width: 8, height: 16},
+      'Px437_IBM_CGA': {width: 8, height: 16},
+      'Px437_DOS-V_re_JPN12': {width: 10, height: 20}
+    };
+    
+    // Load and insert components
+    async function loadComponent(filename, targetId) {
+      try {
+        const response = await fetch(filename);
+        const html = await response.text();
+        document.getElementById(targetId).innerHTML = html;
+      } catch (error) {
+        console.error(`Failed to load ${filename}:`, error);
+        document.getElementById(targetId).innerHTML = `<p style="color: red;">Error loading component: ${filename}</p>`;
+      }
+    }
+    
+    // Global font switching for all components
+    function updateAllComponents(fontName) {
+      if (!FONT_MAP[fontName]) {
+        console.error(`Unknown font: ${fontName}`);
+        return;
+      }
+      
+      const fontData = FONT_MAP[fontName];
+      const components = document.querySelectorAll('ansi-art');
+      
+      console.log(`Switching all ${components.length} components to ${fontName}`);
+      
+      components.forEach((component, index) => {
+        try {
+          const pre = component.querySelector('pre');
+          const spans = component.querySelectorAll('span');
+          
+          if (!pre || !spans.length) {
+            console.warn(`Component ${index} has no valid pre or spans`);
+            return;
+          }
+          
+          const cols = parseInt(pre.dataset.cols);
+          const rows = parseInt(pre.dataset.rows);
+          
+          // Update component data attributes
+          component.dataset.font = fontName;
+          component.dataset.charWidth = fontData.width;
+          component.dataset.charHeight = fontData.height;
+          
+          // Update container size
+          pre.style.width = (cols * fontData.width) + 'px';
+          pre.style.height = (rows * fontData.height) + 'px';
+          
+          // Update all span positions and sizes
+          spans.forEach(span => {
+            const row = parseInt(span.dataset.row);
+            const col = parseInt(span.dataset.col);
+            
+            span.style.left = (col * fontData.width) + 'px';
+            span.style.top = (row * fontData.height) + 'px';
+            span.style.width = fontData.width + 'px';
+            span.style.height = fontData.height + 'px';
+          });
+          
+          console.log(`  ✓ Updated component ${index}: ${cols}×${rows} chars`);
+        } catch (error) {
+          console.error(`Error updating component ${index}:`, error);
+        }
+      });
+    }
+    
+    // Attach global font switcher
+    document.getElementById('global-font').addEventListener('change', (e) => {
+      const fontName = e.target.value;
+      console.log(`Font selector changed to: ${fontName}`);
+      updateAllComponents(fontName);
+    });
+    
+    // Load all test components
+    Promise.all([
+      loadComponent('test1_boxes.html', 'test1-container'),
+      loadComponent('test2_colors.html', 'test2-container'),
+      loadComponent('test3_mixed.html', 'test3-container'),
+      loadComponent('test4_small.html', 'test4-container'),
+      loadComponent('test5_wide.html', 'test5-container')
+    ]).then(() => {
+      console.log('All components loaded successfully');
+      // Log component info
+      const components = document.querySelectorAll('ansi-art');
+      console.log(`Found ${components.length} components`);
+      components.forEach((c, i) => {
+        console.log(`  Component ${i}: ${c.dataset.width}×${c.dataset.height} chars, font: ${c.dataset.font}`);
+      });
+    }).catch(error => {
+      console.error('Failed to load components:', error);
+    });
+  </script>
+</body>
+</html>
