@@ -20,14 +20,26 @@ gcc -Wall -Wextra -O2 -o ansi2html ansi2html.c
 
 ## Usage
 
-### Basic Conversion
+### Basic Conversion (Web Component)
 ```bash
 ./ansi2html < artwork.ans > artwork.html
 ```
+This generates a self-contained `<ansi-art>` web component with pixel-perfect absolute positioning.
+
+### Full Page Output
+```bash
+./ansi2html -p < artwork.ans > artwork_page.html
+```
+This generates a complete HTML page with controls (font selector, etc.).
 
 ### With True Color Support
 ```bash
 ./ansi2html --truecolor < modern.ans > modern.html
+```
+
+### UTF-8 Output
+```bash
+./ansi2html --utf8 < artwork.ans > artwork.html
 ```
 
 ### Help
@@ -37,43 +49,54 @@ gcc -Wall -Wextra -O2 -o ansi2html ansi2html.c
 
 ## Output Format
 
-The generated HTML includes:
-- **Embedded CSS** with all color definitions
-- **Font declarations** linking to fonts in `old_fonts/ttf - Px (pixel outline)/`
-- **Font selector** dropdown at the top of the page
-- **Character spans** with attributes:
-  - `data-id` - Unique sequential identifier (for animations)
-  - `data-row` - Row number (0-based)
-  - `data-col` - Column number (0-based)
-  - `class` - CSS classes (`fg-N`, `bg-N`, `bold`)
+### Web Component Output (Default)
+The generated HTML is a self-contained `<ansi-art>` web component with absolute positioning for pixel-perfect rendering:
 
-### Example HTML Structure
 ```html
-<div class="controls">
-  <label for="font-select">Font:</label>
-  <select id="font-select" onchange="changeFont(this.value)">
-    <option value="Px437_IBM_VGA_8x16" selected>Px437_IBM_VGA_8x16</option>
-    ...
-  </select>
-</div>
-<div class="content">
-  <pre class="ansi-art" id="ansi-art"><span data-id="0" data-row="0" data-col="0" class="fg-7">X</span><span data-id="1" data-row="0" data-col="1" class="fg-10 bold">Y</span>...</pre>
-</div>
+<ansi-art data-width="80" data-height="25" data-font="Px437_IBM_VGA_8x16" data-char-width="8" data-char-height="16">
+  <style>/* Scoped CSS with color definitions */</style>
+  <pre style="position: relative; width: 640px; height: 400px;">
+    <span style="position: absolute; left: 0px; top: 0px;" data-id="0" data-row="0" data-col="0" class="fg-7">A</span>
+    <!-- More spans... -->
+  </pre>
+  <script>/* Font switching functionality */</script>
+</ansi-art>
 ```
 
-**Note**: The `<pre>` tag is essential for proper character alignment. Each character is wrapped in a `<span>` with no extra whitespace between tags to ensure pixel-perfect rendering.
+**Key Features:**
+- ✅ Self-contained (CSS, HTML, JavaScript all embedded)
+- ✅ Pixel-perfect rendering with absolute positioning
+- ✅ Scoped CSS (won't conflict with page styles)
+- ✅ Font switching support (6 fonts built-in)
+- ✅ Data attributes for animation and scripting
+- ✅ Multiple components can coexist on same page
+- ✅ No external dependencies or fetch calls needed
+
+### Full Page Output (With `-p` flag)
+The full page output includes:
+- Font selector dropdown at the top
+- Styled container for the artwork
+- Interactive font switching controls
+
+### Character Span Attributes
+Each character is wrapped in a `<span>` with these attributes:
+- `data-id` - Unique sequential identifier (for animations)
+- `data-row` - Row number (0-based)
+- `data-col` - Column number (0-based)
+- `class` - CSS classes (`fg-N`, `bg-N`, `bold`)
 
 ## Fonts
 
-The HTML references fonts from the `old_fonts/ttf - Px (pixel outline)/` directory. Make sure this folder is in the same location as your HTML output.
+The HTML includes 6 embedded fonts that can be switched at runtime:
 
-Default fonts included:
-- **Px437_IBM_VGA_8x16** (Default)
-- Px437_IBM_VGA_9x16
-- Px437_IBM_EGA_8x14
-- Px437_IBM_BIOS
-- Px437_IBM_CGA
-- Px437_DOS-V_re_JPN12
+- **Px437_IBM_VGA_8x16** (Default) - 8×16 pixels, authentic VGA font
+- **Px437_IBM_VGA_9x16** - 9×16 pixels, VGA variant
+- **Px437_IBM_EGA_8x14** - 8×14 pixels, EGA font
+- **Px437_IBM_BIOS** - BIOS variant
+- **Px437_IBM_CGA** - CGA terminal font
+- **Px437_DOS-V_re_JPN12** - Japanese DOS font variant
+
+The web component automatically adjusts character positioning when fonts are switched, recalculating positions based on font dimensions.
 
 ## Color Palette
 
@@ -94,6 +117,45 @@ Standard ANSI/CGA color palette:
 - 13: Bright Magenta (#ff55ff)
 - 14: Bright Cyan (#55ffff)
 - 15: Bright White (#ffffff)
+
+## Embedding Web Components
+
+### Quick Start
+1. Generate an ANSI component: `./ansi2html < myart.ans > myart.html`
+2. Open `myart.html` in a text editor and copy the entire `<ansi-art>...</ansi-art>` block
+3. Paste it directly into your HTML page:
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+    <title>My Page with ANSI Art</title>
+</head>
+<body>
+    <h1>Welcome to my page</h1>
+    
+    <!-- Paste the ansi-art component here -->
+    <ansi-art data-width="80" ...>
+        <style>...</style>
+        <pre>...</pre>
+        <script>...</script>
+    </ansi-art>
+    
+</body>
+</html>
+```
+
+That's it! The component is completely self-contained and won't conflict with your page styles.
+
+### Multiple Components on Same Page
+You can embed multiple `<ansi-art>` components on the same page. Each one maintains its own styling and functionality independently.
+
+### Viewing the Demo
+Open `embed_demo.html` in your browser to see:
+- 3 embedded ANSI art components
+- Global font switcher affecting all components in real-time
+- Pixel-perfect rendering with box-drawing characters
+- Font switching with automatic position recalculation
 
 ## CSS Animation Examples
 
