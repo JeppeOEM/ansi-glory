@@ -119,13 +119,555 @@
        max-width: 500px;
      }
     
-    footer {
-      text-align: center;
-      margin-top: 30px;
-      color: #666;
-      font-size: 0.9em;
+     footer {
+       text-align: center;
+       margin-top: 30px;
+       color: #666;
+       font-size: 0.9em;
+     }
+     
+     /* Font face definitions for all available fonts */
+    @font-face {
+      font-family: 'Px437_ACM_VGA_8x14';
+      src: url('../old_fonts/ttf - Px (pixel outline)/Px437_ACM_VGA_8x14.ttf') format('truetype');
     }
-  </style>
+      @font-face {
+      font-family: 'Px437_ACM_VGA_8x16';
+      src: url('../old_fonts/ttf - Px (pixel outline)/Px437_ACM_VGA_8x16.ttf') format('truetype');
+    }
+      @font-face {
+      font-family: 'Px437_ACM_VGA_8x8';
+      src: url('../old_fonts/ttf - Px (pixel outline)/Px437_ACM_VGA_8x8.ttf') format('truetype');
+    }
+      @font-face {
+      font-family: 'Px437_ACM_VGA_9x14';
+      src: url('../old_fonts/ttf - Px (pixel outline)/Px437_ACM_VGA_9x14.ttf') format('truetype');
+    }
+      @font-face {
+      font-family: 'Px437_ACM_VGA_9x16';
+      src: url('../old_fonts/ttf - Px (pixel outline)/Px437_ACM_VGA_9x16.ttf') format('truetype');
+    }
+      @font-face {
+      font-family: 'Px437_ACM_VGA_9x8';
+      src: url('../old_fonts/ttf - Px (pixel outline)/Px437_ACM_VGA_9x8.ttf') format('truetype');
+    }
+      @font-face {
+      font-family: 'Px437_AMI_EGA_8x14';
+      src: url('../old_fonts/ttf - Px (pixel outline)/Px437_AMI_EGA_8x14.ttf') format('truetype');
+    }
+      @font-face {
+      font-family: 'Px437_AMI_EGA_8x8';
+      src: url('../old_fonts/ttf - Px (pixel outline)/Px437_AMI_EGA_8x8.ttf') format('truetype');
+    }
+      @font-face {
+      font-family: 'Px437_AMI_EGA_8x8-2y';
+      src: url('../old_fonts/ttf - Px (pixel outline)/Px437_AMI_EGA_8x8-2y.ttf') format('truetype');
+    }
+      @font-face {
+      font-family: 'Px437_AMI_EGA_9x14';
+      src: url('../old_fonts/ttf - Px (pixel outline)/Px437_AMI_EGA_9x14.ttf') format('truetype');
+    }
+      @font-face {
+      font-family: 'Px437_ATI_8x14';
+      src: url('../old_fonts/ttf - Px (pixel outline)/Px437_ATI_8x14.ttf') format('truetype');
+    }
+      @font-face {
+      font-family: 'Px437_ATI_8x16';
+      src: url('../old_fonts/ttf - Px (pixel outline)/Px437_ATI_8x16.ttf') format('truetype');
+    }
+      @font-face {
+      font-family: 'Px437_ATI_8x8';
+      src: url('../old_fonts/ttf - Px (pixel outline)/Px437_ATI_8x8.ttf') format('truetype');
+    }
+      @font-face {
+      font-family: 'Px437_ATI_8x8-2y';
+      src: url('../old_fonts/ttf - Px (pixel outline)/Px437_ATI_8x8-2y.ttf') format('truetype');
+    }
+      @font-face {
+      font-family: 'Px437_ATI_9x14';
+      src: url('../old_fonts/ttf - Px (pixel outline)/Px437_ATI_9x14.ttf') format('truetype');
+    }
+      @font-face {
+      font-family: 'Px437_ATI_9x16';
+      src: url('../old_fonts/ttf - Px (pixel outline)/Px437_ATI_9x16.ttf') format('truetype');
+    }
+      @font-face {
+      font-family: 'Px437_ATI_9x8';
+      src: url('../old_fonts/ttf - Px (pixel outline)/Px437_ATI_9x8.ttf') format('truetype');
+    }
+      @font-face {
+      font-family: 'Px437_ATI_SmallW_6x8';
+      src: url('../old_fonts/ttf - Px (pixel outline)/Px437_ATI_SmallW_6x8.ttf') format('truetype');
+    }
+      @font-face {
+      font-family: 'Px437_Acer_VGA_8x8';
+      src: url('../old_fonts/ttf - Px (pixel outline)/Px437_Acer_VGA_8x8.ttf') format('truetype');
+    }
+      @font-face {
+      font-family: 'Px437_Acer_VGA_8x8-2y';
+      src: url('../old_fonts/ttf - Px (pixel outline)/Px437_Acer_VGA_8x8-2y.ttf') format('truetype');
+    }
+      @font-face {
+      font-family: 'Px437_Acer_VGA_9x8';
+      src: url('../old_fonts/ttf - Px (pixel outline)/Px437_Acer_VGA_9x8.ttf') format('truetype');
+    }
+      @font-face {
+      font-family: 'Px437_CL_EagleIII_8x16';
+      src: url('../old_fonts/ttf - Px (pixel outline)/Px437_CL_EagleIII_8x16.ttf') format('truetype');
+    }
+      @font-face {
+      font-family: 'Px437_CL_EagleIII_9x16';
+      src: url('../old_fonts/ttf - Px (pixel outline)/Px437_CL_EagleIII_9x16.ttf') format('truetype');
+    }
+      @font-face {
+      font-family: 'Px437_CL_EagleII_8x16';
+      src: url('../old_fonts/ttf - Px (pixel outline)/Px437_CL_EagleII_8x16.ttf') format('truetype');
+    }
+      @font-face {
+      font-family: 'Px437_CL_EagleII_9x16';
+      src: url('../old_fonts/ttf - Px (pixel outline)/Px437_CL_EagleII_9x16.ttf') format('truetype');
+    }
+      @font-face {
+      font-family: 'Px437_CL_Stingray_8x16';
+      src: url('../old_fonts/ttf - Px (pixel outline)/Px437_CL_Stingray_8x16.ttf') format('truetype');
+    }
+      @font-face {
+      font-family: 'Px437_CL_Stingray_8x16_bold';
+      src: url('../old_fonts/ttf - Px (pixel outline)/Px437_CL_Stingray_8x16_bold.ttf') format('truetype');
+    }
+      @font-face {
+      font-family: 'Px437_CL_Stingray_8x19';
+      src: url('../old_fonts/ttf - Px (pixel outline)/Px437_CL_Stingray_8x19.ttf') format('truetype');
+    }
+      @font-face {
+      font-family: 'Px437_CL_Stingray_8x19_bold';
+      src: url('../old_fonts/ttf - Px (pixel outline)/Px437_CL_Stingray_8x19_bold.ttf') format('truetype');
+    }
+      @font-face {
+      font-family: 'Px437_CompaqThin_8x14';
+      src: url('../old_fonts/ttf - Px (pixel outline)/Px437_CompaqThin_8x14.ttf') format('truetype');
+    }
+      @font-face {
+      font-family: 'Px437_CompaqThin_8x16';
+      src: url('../old_fonts/ttf - Px (pixel outline)/Px437_CompaqThin_8x16.ttf') format('truetype');
+    }
+      @font-face {
+      font-family: 'Px437_CompaqThin_8x8';
+      src: url('../old_fonts/ttf - Px (pixel outline)/Px437_CompaqThin_8x8.ttf') format('truetype');
+    }
+      @font-face {
+      font-family: 'Px437_EverexME_5x8';
+      src: url('../old_fonts/ttf - Px (pixel outline)/Px437_EverexME_5x8.ttf') format('truetype');
+    }
+      @font-face {
+      font-family: 'Px437_EverexME_7x8';
+      src: url('../old_fonts/ttf - Px (pixel outline)/Px437_EverexME_7x8.ttf') format('truetype');
+    }
+      @font-face {
+      font-family: 'Px437_EverexME_8x16';
+      src: url('../old_fonts/ttf - Px (pixel outline)/Px437_EverexME_8x16.ttf') format('truetype');
+    }
+      @font-face {
+      font-family: 'Px437_FMTowns_re_8x16';
+      src: url('../old_fonts/ttf - Px (pixel outline)/Px437_FMTowns_re_8x16.ttf') format('truetype');
+    }
+      @font-face {
+      font-family: 'Px437_FMTowns_re_8x16-2x';
+      src: url('../old_fonts/ttf - Px (pixel outline)/Px437_FMTowns_re_8x16-2x.ttf') format('truetype');
+    }
+      @font-face {
+      font-family: 'Px437_FMTowns_re_8x8';
+      src: url('../old_fonts/ttf - Px (pixel outline)/Px437_FMTowns_re_8x8.ttf') format('truetype');
+    }
+      @font-face {
+      font-family: 'Px437_HP_100LX_10x11';
+      src: url('../old_fonts/ttf - Px (pixel outline)/Px437_HP_100LX_10x11.ttf') format('truetype');
+    }
+      @font-face {
+      font-family: 'Px437_HP_100LX_16x12';
+      src: url('../old_fonts/ttf - Px (pixel outline)/Px437_HP_100LX_16x12.ttf') format('truetype');
+    }
+      @font-face {
+      font-family: 'Px437_HP_100LX_6x8';
+      src: url('../old_fonts/ttf - Px (pixel outline)/Px437_HP_100LX_6x8.ttf') format('truetype');
+    }
+      @font-face {
+      font-family: 'Px437_HP_100LX_6x8-2x';
+      src: url('../old_fonts/ttf - Px (pixel outline)/Px437_HP_100LX_6x8-2x.ttf') format('truetype');
+    }
+      @font-face {
+      font-family: 'Px437_HP_100LX_8x8';
+      src: url('../old_fonts/ttf - Px (pixel outline)/Px437_HP_100LX_8x8.ttf') format('truetype');
+    }
+      @font-face {
+      font-family: 'Px437_HP_100LX_8x8-2x';
+      src: url('../old_fonts/ttf - Px (pixel outline)/Px437_HP_100LX_8x8-2x.ttf') format('truetype');
+    }
+      @font-face {
+      font-family: 'Px437_IBM_EGA_8x14';
+      src: url('../old_fonts/ttf - Px (pixel outline)/Px437_IBM_EGA_8x14.ttf') format('truetype');
+    }
+      @font-face {
+      font-family: 'Px437_IBM_EGA_8x14-2x';
+      src: url('../old_fonts/ttf - Px (pixel outline)/Px437_IBM_EGA_8x14-2x.ttf') format('truetype');
+    }
+      @font-face {
+      font-family: 'Px437_IBM_EGA_8x8';
+      src: url('../old_fonts/ttf - Px (pixel outline)/Px437_IBM_EGA_8x8.ttf') format('truetype');
+    }
+      @font-face {
+      font-family: 'Px437_IBM_EGA_8x8-2x';
+      src: url('../old_fonts/ttf - Px (pixel outline)/Px437_IBM_EGA_8x8-2x.ttf') format('truetype');
+    }
+      @font-face {
+      font-family: 'Px437_IBM_EGA_9x14';
+      src: url('../old_fonts/ttf - Px (pixel outline)/Px437_IBM_EGA_9x14.ttf') format('truetype');
+    }
+      @font-face {
+      font-family: 'Px437_IBM_EGA_9x14-2x';
+      src: url('../old_fonts/ttf - Px (pixel outline)/Px437_IBM_EGA_9x14-2x.ttf') format('truetype');
+    }
+      @font-face {
+      font-family: 'Px437_IBM_EGA_9x8';
+      src: url('../old_fonts/ttf - Px (pixel outline)/Px437_IBM_EGA_9x8.ttf') format('truetype');
+    }
+      @font-face {
+      font-family: 'Px437_IBM_EGA_9x8-2x';
+      src: url('../old_fonts/ttf - Px (pixel outline)/Px437_IBM_EGA_9x8-2x.ttf') format('truetype');
+    }
+      @font-face {
+      font-family: 'Px437_IBM_VGA_8x14';
+      src: url('../old_fonts/ttf - Px (pixel outline)/Px437_IBM_VGA_8x14.ttf') format('truetype');
+    }
+      @font-face {
+      font-family: 'Px437_IBM_VGA_8x14-2x';
+      src: url('../old_fonts/ttf - Px (pixel outline)/Px437_IBM_VGA_8x14-2x.ttf') format('truetype');
+    }
+      @font-face {
+      font-family: 'Px437_IBM_VGA_8x16';
+      src: url('../old_fonts/ttf - Px (pixel outline)/Px437_IBM_VGA_8x16.ttf') format('truetype');
+    }
+      @font-face {
+      font-family: 'Px437_IBM_VGA_8x16-2x';
+      src: url('../old_fonts/ttf - Px (pixel outline)/Px437_IBM_VGA_8x16-2x.ttf') format('truetype');
+    }
+      @font-face {
+      font-family: 'Px437_IBM_VGA_9x14';
+      src: url('../old_fonts/ttf - Px (pixel outline)/Px437_IBM_VGA_9x14.ttf') format('truetype');
+    }
+      @font-face {
+      font-family: 'Px437_IBM_VGA_9x14-2x';
+      src: url('../old_fonts/ttf - Px (pixel outline)/Px437_IBM_VGA_9x14-2x.ttf') format('truetype');
+    }
+      @font-face {
+      font-family: 'Px437_IBM_VGA_9x16';
+      src: url('../old_fonts/ttf - Px (pixel outline)/Px437_IBM_VGA_9x16.ttf') format('truetype');
+    }
+      @font-face {
+      font-family: 'Px437_IBM_VGA_9x16-2x';
+      src: url('../old_fonts/ttf - Px (pixel outline)/Px437_IBM_VGA_9x16-2x.ttf') format('truetype');
+    }
+      @font-face {
+      font-family: 'Px437_IBM_VGA_9x8';
+      src: url('../old_fonts/ttf - Px (pixel outline)/Px437_IBM_VGA_9x8.ttf') format('truetype');
+    }
+      @font-face {
+      font-family: 'Px437_IBM_VGA_9x8-2x';
+      src: url('../old_fonts/ttf - Px (pixel outline)/Px437_IBM_VGA_9x8-2x.ttf') format('truetype');
+    }
+      @font-face {
+      font-family: 'Px437_IBM_XGA-AI_12x20';
+      src: url('../old_fonts/ttf - Px (pixel outline)/Px437_IBM_XGA-AI_12x20.ttf') format('truetype');
+    }
+      @font-face {
+      font-family: 'Px437_IBM_XGA-AI_12x23';
+      src: url('../old_fonts/ttf - Px (pixel outline)/Px437_IBM_XGA-AI_12x23.ttf') format('truetype');
+    }
+      @font-face {
+      font-family: 'Px437_IBM_XGA-AI_7x15';
+      src: url('../old_fonts/ttf - Px (pixel outline)/Px437_IBM_XGA-AI_7x15.ttf') format('truetype');
+    }
+      @font-face {
+      font-family: 'Px437_IGS_VGA_8x16';
+      src: url('../old_fonts/ttf - Px (pixel outline)/Px437_IGS_VGA_8x16.ttf') format('truetype');
+    }
+      @font-face {
+      font-family: 'Px437_IGS_VGA_9x16';
+      src: url('../old_fonts/ttf - Px (pixel outline)/Px437_IGS_VGA_9x16.ttf') format('truetype');
+    }
+      @font-face {
+      font-family: 'Px437_MBytePC230_8x16';
+      src: url('../old_fonts/ttf - Px (pixel outline)/Px437_MBytePC230_8x16.ttf') format('truetype');
+    }
+      @font-face {
+      font-family: 'Px437_NEC_APC3_8x16';
+      src: url('../old_fonts/ttf - Px (pixel outline)/Px437_NEC_APC3_8x16.ttf') format('truetype');
+    }
+      @font-face {
+      font-family: 'Px437_NEC_APC3_8x16-2x';
+      src: url('../old_fonts/ttf - Px (pixel outline)/Px437_NEC_APC3_8x16-2x.ttf') format('truetype');
+    }
+      @font-face {
+      font-family: 'Px437_NEC_APC3_8x8';
+      src: url('../old_fonts/ttf - Px (pixel outline)/Px437_NEC_APC3_8x8.ttf') format('truetype');
+    }
+      @font-face {
+      font-family: 'Px437_NEC_APC3_8x8-2y';
+      src: url('../old_fonts/ttf - Px (pixel outline)/Px437_NEC_APC3_8x8-2y.ttf') format('truetype');
+    }
+      @font-face {
+      font-family: 'Px437_OlivettiThin_8x14';
+      src: url('../old_fonts/ttf - Px (pixel outline)/Px437_OlivettiThin_8x14.ttf') format('truetype');
+    }
+      @font-face {
+      font-family: 'Px437_OlivettiThin_8x16';
+      src: url('../old_fonts/ttf - Px (pixel outline)/Px437_OlivettiThin_8x16.ttf') format('truetype');
+    }
+      @font-face {
+      font-family: 'Px437_OlivettiThin_9x14';
+      src: url('../old_fonts/ttf - Px (pixel outline)/Px437_OlivettiThin_9x14.ttf') format('truetype');
+    }
+      @font-face {
+      font-family: 'Px437_OlivettiThin_9x16';
+      src: url('../old_fonts/ttf - Px (pixel outline)/Px437_OlivettiThin_9x16.ttf') format('truetype');
+    }
+      @font-face {
+      font-family: 'Px437_Paradise132_7x16';
+      src: url('../old_fonts/ttf - Px (pixel outline)/Px437_Paradise132_7x16.ttf') format('truetype');
+    }
+      @font-face {
+      font-family: 'Px437_Paradise132_7x9';
+      src: url('../old_fonts/ttf - Px (pixel outline)/Px437_Paradise132_7x9.ttf') format('truetype');
+    }
+      @font-face {
+      font-family: 'Px437_PhoenixEGA_8x14';
+      src: url('../old_fonts/ttf - Px (pixel outline)/Px437_PhoenixEGA_8x14.ttf') format('truetype');
+    }
+      @font-face {
+      font-family: 'Px437_PhoenixEGA_8x16';
+      src: url('../old_fonts/ttf - Px (pixel outline)/Px437_PhoenixEGA_8x16.ttf') format('truetype');
+    }
+      @font-face {
+      font-family: 'Px437_PhoenixEGA_8x8';
+      src: url('../old_fonts/ttf - Px (pixel outline)/Px437_PhoenixEGA_8x8.ttf') format('truetype');
+    }
+      @font-face {
+      font-family: 'Px437_PhoenixEGA_8x8-2y';
+      src: url('../old_fonts/ttf - Px (pixel outline)/Px437_PhoenixEGA_8x8-2y.ttf') format('truetype');
+    }
+      @font-face {
+      font-family: 'Px437_PhoenixEGA_9x14';
+      src: url('../old_fonts/ttf - Px (pixel outline)/Px437_PhoenixEGA_9x14.ttf') format('truetype');
+    }
+      @font-face {
+      font-family: 'Px437_PhoenixVGA_8x14';
+      src: url('../old_fonts/ttf - Px (pixel outline)/Px437_PhoenixVGA_8x14.ttf') format('truetype');
+    }
+      @font-face {
+      font-family: 'Px437_PhoenixVGA_8x16';
+      src: url('../old_fonts/ttf - Px (pixel outline)/Px437_PhoenixVGA_8x16.ttf') format('truetype');
+    }
+      @font-face {
+      font-family: 'Px437_PhoenixVGA_8x8';
+      src: url('../old_fonts/ttf - Px (pixel outline)/Px437_PhoenixVGA_8x8.ttf') format('truetype');
+    }
+      @font-face {
+      font-family: 'Px437_PhoenixVGA_9x14';
+      src: url('../old_fonts/ttf - Px (pixel outline)/Px437_PhoenixVGA_9x14.ttf') format('truetype');
+    }
+      @font-face {
+      font-family: 'Px437_PhoenixVGA_9x16';
+      src: url('../old_fonts/ttf - Px (pixel outline)/Px437_PhoenixVGA_9x16.ttf') format('truetype');
+    }
+      @font-face {
+      font-family: 'Px437_PhoenixVGA_9x8';
+      src: url('../old_fonts/ttf - Px (pixel outline)/Px437_PhoenixVGA_9x8.ttf') format('truetype');
+    }
+      @font-face {
+      font-family: 'Px437_Portfolio_6x8';
+      src: url('../old_fonts/ttf - Px (pixel outline)/Px437_Portfolio_6x8.ttf') format('truetype');
+    }
+      @font-face {
+      font-family: 'Px437_STB_AutoEGA_8x14';
+      src: url('../old_fonts/ttf - Px (pixel outline)/Px437_STB_AutoEGA_8x14.ttf') format('truetype');
+    }
+      @font-face {
+      font-family: 'Px437_STB_AutoEGA_9x14';
+      src: url('../old_fonts/ttf - Px (pixel outline)/Px437_STB_AutoEGA_9x14.ttf') format('truetype');
+    }
+      @font-face {
+      font-family: 'Px437_Sigma_RM_8x14';
+      src: url('../old_fonts/ttf - Px (pixel outline)/Px437_Sigma_RM_8x14.ttf') format('truetype');
+    }
+      @font-face {
+      font-family: 'Px437_Sigma_RM_8x16';
+      src: url('../old_fonts/ttf - Px (pixel outline)/Px437_Sigma_RM_8x16.ttf') format('truetype');
+    }
+      @font-face {
+      font-family: 'Px437_Sigma_RM_8x8';
+      src: url('../old_fonts/ttf - Px (pixel outline)/Px437_Sigma_RM_8x8.ttf') format('truetype');
+    }
+      @font-face {
+      font-family: 'Px437_Sigma_RM_9x14';
+      src: url('../old_fonts/ttf - Px (pixel outline)/Px437_Sigma_RM_9x14.ttf') format('truetype');
+    }
+      @font-face {
+      font-family: 'Px437_Sigma_RM_9x16';
+      src: url('../old_fonts/ttf - Px (pixel outline)/Px437_Sigma_RM_9x16.ttf') format('truetype');
+    }
+      @font-face {
+      font-family: 'Px437_Sigma_RM_9x8';
+      src: url('../old_fonts/ttf - Px (pixel outline)/Px437_Sigma_RM_9x8.ttf') format('truetype');
+    }
+      @font-face {
+      font-family: 'Px437_SperryPC_8x16';
+      src: url('../old_fonts/ttf - Px (pixel outline)/Px437_SperryPC_8x16.ttf') format('truetype');
+    }
+      @font-face {
+      font-family: 'Px437_ToshibaSat_8x14';
+      src: url('../old_fonts/ttf - Px (pixel outline)/Px437_ToshibaSat_8x14.ttf') format('truetype');
+    }
+      @font-face {
+      font-family: 'Px437_ToshibaSat_8x16';
+      src: url('../old_fonts/ttf - Px (pixel outline)/Px437_ToshibaSat_8x16.ttf') format('truetype');
+    }
+      @font-face {
+      font-family: 'Px437_ToshibaSat_8x8';
+      src: url('../old_fonts/ttf - Px (pixel outline)/Px437_ToshibaSat_8x8.ttf') format('truetype');
+    }
+      @font-face {
+      font-family: 'Px437_ToshibaSat_9x14';
+      src: url('../old_fonts/ttf - Px (pixel outline)/Px437_ToshibaSat_9x14.ttf') format('truetype');
+    }
+      @font-face {
+      font-family: 'Px437_ToshibaSat_9x16';
+      src: url('../old_fonts/ttf - Px (pixel outline)/Px437_ToshibaSat_9x16.ttf') format('truetype');
+    }
+      @font-face {
+      font-family: 'Px437_ToshibaSat_9x8';
+      src: url('../old_fonts/ttf - Px (pixel outline)/Px437_ToshibaSat_9x8.ttf') format('truetype');
+    }
+      @font-face {
+      font-family: 'Px437_ToshibaT300_8x16';
+      src: url('../old_fonts/ttf - Px (pixel outline)/Px437_ToshibaT300_8x16.ttf') format('truetype');
+    }
+      @font-face {
+      font-family: 'Px437_ToshibaT300_8x8';
+      src: url('../old_fonts/ttf - Px (pixel outline)/Px437_ToshibaT300_8x8.ttf') format('truetype');
+    }
+      @font-face {
+      font-family: 'Px437_ToshibaT300_8x8-2y';
+      src: url('../old_fonts/ttf - Px (pixel outline)/Px437_ToshibaT300_8x8-2y.ttf') format('truetype');
+    }
+      @font-face {
+      font-family: 'Px437_ToshibaTxL1_8x16';
+      src: url('../old_fonts/ttf - Px (pixel outline)/Px437_ToshibaTxL1_8x16.ttf') format('truetype');
+    }
+      @font-face {
+      font-family: 'Px437_ToshibaTxL1_8x8';
+      src: url('../old_fonts/ttf - Px (pixel outline)/Px437_ToshibaTxL1_8x8.ttf') format('truetype');
+    }
+      @font-face {
+      font-family: 'Px437_ToshibaTxL2_8x16';
+      src: url('../old_fonts/ttf - Px (pixel outline)/Px437_ToshibaTxL2_8x16.ttf') format('truetype');
+    }
+      @font-face {
+      font-family: 'Px437_ToshibaTxL2_8x8';
+      src: url('../old_fonts/ttf - Px (pixel outline)/Px437_ToshibaTxL2_8x8.ttf') format('truetype');
+    }
+      @font-face {
+      font-family: 'Px437_TridentEarly_8x11';
+      src: url('../old_fonts/ttf - Px (pixel outline)/Px437_TridentEarly_8x11.ttf') format('truetype');
+    }
+      @font-face {
+      font-family: 'Px437_TridentEarly_8x14';
+      src: url('../old_fonts/ttf - Px (pixel outline)/Px437_TridentEarly_8x14.ttf') format('truetype');
+    }
+      @font-face {
+      font-family: 'Px437_TridentEarly_8x16';
+      src: url('../old_fonts/ttf - Px (pixel outline)/Px437_TridentEarly_8x16.ttf') format('truetype');
+    }
+      @font-face {
+      font-family: 'Px437_TridentEarly_8x8';
+      src: url('../old_fonts/ttf - Px (pixel outline)/Px437_TridentEarly_8x8.ttf') format('truetype');
+    }
+      @font-face {
+      font-family: 'Px437_TridentEarly_9x14';
+      src: url('../old_fonts/ttf - Px (pixel outline)/Px437_TridentEarly_9x14.ttf') format('truetype');
+    }
+      @font-face {
+      font-family: 'Px437_TridentEarly_9x16';
+      src: url('../old_fonts/ttf - Px (pixel outline)/Px437_TridentEarly_9x16.ttf') format('truetype');
+    }
+      @font-face {
+      font-family: 'Px437_TridentEarly_9x8';
+      src: url('../old_fonts/ttf - Px (pixel outline)/Px437_TridentEarly_9x8.ttf') format('truetype');
+    }
+      @font-face {
+      font-family: 'Px437_Trident_8x11';
+      src: url('../old_fonts/ttf - Px (pixel outline)/Px437_Trident_8x11.ttf') format('truetype');
+    }
+      @font-face {
+      font-family: 'Px437_Trident_8x14';
+      src: url('../old_fonts/ttf - Px (pixel outline)/Px437_Trident_8x14.ttf') format('truetype');
+    }
+      @font-face {
+      font-family: 'Px437_Trident_8x16';
+      src: url('../old_fonts/ttf - Px (pixel outline)/Px437_Trident_8x16.ttf') format('truetype');
+    }
+      @font-face {
+      font-family: 'Px437_Trident_8x8';
+      src: url('../old_fonts/ttf - Px (pixel outline)/Px437_Trident_8x8.ttf') format('truetype');
+    }
+      @font-face {
+      font-family: 'Px437_Trident_9x14';
+      src: url('../old_fonts/ttf - Px (pixel outline)/Px437_Trident_9x14.ttf') format('truetype');
+    }
+      @font-face {
+      font-family: 'Px437_Trident_9x16';
+      src: url('../old_fonts/ttf - Px (pixel outline)/Px437_Trident_9x16.ttf') format('truetype');
+    }
+      @font-face {
+      font-family: 'Px437_Trident_9x8';
+      src: url('../old_fonts/ttf - Px (pixel outline)/Px437_Trident_9x8.ttf') format('truetype');
+    }
+      @font-face {
+      font-family: 'Px437_TsengEVA_132_6x14';
+      src: url('../old_fonts/ttf - Px (pixel outline)/Px437_TsengEVA_132_6x14.ttf') format('truetype');
+    }
+      @font-face {
+      font-family: 'Px437_TsengEVA_132_6x8';
+      src: url('../old_fonts/ttf - Px (pixel outline)/Px437_TsengEVA_132_6x8.ttf') format('truetype');
+    }
+      @font-face {
+      font-family: 'Px437_Verite_8x14';
+      src: url('../old_fonts/ttf - Px (pixel outline)/Px437_Verite_8x14.ttf') format('truetype');
+    }
+      @font-face {
+      font-family: 'Px437_Verite_8x16';
+      src: url('../old_fonts/ttf - Px (pixel outline)/Px437_Verite_8x16.ttf') format('truetype');
+    }
+      @font-face {
+      font-family: 'Px437_Verite_8x8';
+      src: url('../old_fonts/ttf - Px (pixel outline)/Px437_Verite_8x8.ttf') format('truetype');
+    }
+      @font-face {
+      font-family: 'Px437_Verite_8x8-2y';
+      src: url('../old_fonts/ttf - Px (pixel outline)/Px437_Verite_8x8-2y.ttf') format('truetype');
+    }
+      @font-face {
+      font-family: 'Px437_Verite_9x14';
+      src: url('../old_fonts/ttf - Px (pixel outline)/Px437_Verite_9x14.ttf') format('truetype');
+    }
+      @font-face {
+      font-family: 'Px437_Verite_9x16';
+      src: url('../old_fonts/ttf - Px (pixel outline)/Px437_Verite_9x16.ttf') format('truetype');
+    }
+      @font-face {
+      font-family: 'Px437_Verite_9x8';
+      src: url('../old_fonts/ttf - Px (pixel outline)/Px437_Verite_9x8.ttf') format('truetype');
+    }
+   </style>
 </head>
 <body>
   <div class="container">
@@ -563,26 +1105,30 @@ ansi-art .bold { font-weight: bold; }
   const cols = parseInt(pre.dataset.cols);
   const rows = parseInt(pre.dataset.rows);
   
-  window.switchComponentFont = function(fontName) {
-    if (!FONT_DATA[fontName]) return;
-    
-    const fontData = FONT_DATA[fontName];
-    component.dataset.font = fontName;
-    component.dataset.charWidth = fontData.width;
-    component.dataset.charHeight = fontData.height;
-    
-    pre.style.width = (cols * fontData.width) + 'px';
-    pre.style.height = (rows * fontData.height) + 'px';
-    
-    spans.forEach(span => {
-      const row = parseInt(span.dataset.row);
-      const col = parseInt(span.dataset.col);
-      span.style.left = (col * fontData.width) + 'px';
-      span.style.top = (row * fontData.height) + 'px';
-      span.style.width = fontData.width + 'px';
-      span.style.height = fontData.height + 'px';
-    });
-  };
+   window.switchComponentFont = function(fontName) {
+     if (!FONT_DATA[fontName]) return;
+     
+     const fontData = FONT_DATA[fontName];
+     component.dataset.font = fontName;
+     component.dataset.charWidth = fontData.width;
+     component.dataset.charHeight = fontData.height;
+     
+     // Apply the font family
+     pre.style.fontFamily = `'${fontName}'`;
+     pre.style.fontSize = fontData.height + 'px';
+     
+     pre.style.width = (cols * fontData.width) + 'px';
+     pre.style.height = (rows * fontData.height) + 'px';
+     
+     spans.forEach(span => {
+       const row = parseInt(span.dataset.row);
+       const col = parseInt(span.dataset.col);
+       span.style.left = (col * fontData.width) + 'px';
+       span.style.top = (row * fontData.height) + 'px';
+       span.style.width = fontData.width + 'px';
+       span.style.height = fontData.height + 'px';
+     });
+   };
 })();
 </script>
 </ansi-art>
