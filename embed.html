@@ -878,7 +878,7 @@ ansi-art span {
   margin: 0;
   padding: 0;
   border: 0;
-  overflow: hidden;
+  overflow: visible;
   font-family: inherit;
   font-size: inherit;
   line-height: inherit;
@@ -889,6 +889,9 @@ ansi-art span {
   font-variant-ligatures: none;
   font-kerning: none;
   font-feature-settings: 'kern' 0, 'liga' 0;
+  -webkit-text-size-adjust: 100%;
+  display: inline-block;
+  width: 1ch;
 }
 ansi-art .fg-0 { color: #000000; }
 ansi-art .fg-1 { color: #aa0000; }
