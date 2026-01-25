@@ -629,7 +629,7 @@ static void generate_font_list(void) {
     for (int i = 0; font_list[i] != NULL; i++) {
         printf("@font-face {\n");
         printf("  font-family: '%s';\n", font_list[i]);
-        printf("  src: url('old_fonts/ttf - Px (pixel outline)/%s.ttf') format('truetype');\n", font_list[i]);
+        printf("  src: url('file:///home/mrqdt/code/ansi2html/old_fonts/ttf - Px (pixel outline)/%s.ttf') format('truetype');\n", font_list[i]);
         printf("  font-weight: normal;\n");
         printf("  font-style: normal;\n");
         printf("}\n");
